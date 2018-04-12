@@ -17,6 +17,7 @@ public:
 
 	Clock disconectionClock;
 	
-	ClientProxy();
-	void CheckDisconnection();
+	ClientProxy() {};
+	ClientProxy(IpAddress, unsigned short, Coordinates);
+	bool CheckDisconnection();
 };

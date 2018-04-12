@@ -1,3 +1,10 @@
-﻿  ServerManager.cpp
+﻿  Source.cpp
+  ServerManager.cpp
+c:\users\pblanes\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(71): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\users\pblanes\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(124): warning C4838: conversion from 'int' to 'uint8_t' requires a narrowing conversion
+  ClientProxy.cpp
+  Generating Code...
+c:\users\pblanes\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\clientproxy.cpp(14): warning C4715: 'ClientProxy::CheckDisconnection': not all control paths return a value
+c:\users\pblanes\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(197): warning C4715: 'ServerManager::GetClient': not all control paths return a value
   GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Debug\GameServer.exe
   GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Debug\GameServer.pdb (Partial PDB)

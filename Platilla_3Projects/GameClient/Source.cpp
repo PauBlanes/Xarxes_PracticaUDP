@@ -1,9 +1,8 @@
 #pragma once
-#include <PlayerInfo.h>
-#include <SFML\Network.hpp>
+#include "gameEngine.h"
 
 int main()
 {
-	PlayerInfo playerInfo;
+	gameEngine gM;
 	return 0;
 }

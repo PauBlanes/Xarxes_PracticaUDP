@@ -1,12 +1,11 @@
 #pragma once
 #include <iostream>
-#include <SFML\Graphics.hpp>
-#include <SFML\Network.hpp>
-#include <PlayerInfo.h>
+#include "ServerManager.h"
+
 
 int main()
 {
 	
-	PlayerInfo playerInfo;
+	ServerManager sM;
 	return 0;
 }
