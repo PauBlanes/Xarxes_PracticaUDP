@@ -3,8 +3,10 @@
 #include <iostream>
 #include "InputMemoryStream.h"
 #include "OutputMemoryStream.h"
+#include <time.h>
 
-#define RESEND_TIME 250
+#define RESEND_TIME 500
+#define PERCENTAGE_PACKET_LOSS 75
 
 struct Mesage {
 	char* buffer;

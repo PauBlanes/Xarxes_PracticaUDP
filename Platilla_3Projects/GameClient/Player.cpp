@@ -19,10 +19,11 @@ Player::Player()
 	myColor = sf::Color::Yellow;
 }
 
-Player::Player(uint8_t x, uint8_t y, sf::Color col)
+Player::Player(uint8_t x, uint8_t y, sf::Color col, uint8_t myId)
 {
 	position = { x,y };
 	myColor = col;
+	id = myId;
 }
 
 

@@ -97,6 +97,8 @@ void gameEngine::startGame() {
 		//comprovem comandos
 		ReceiveCommands();
 
+	
+
 		sf::Event event;
 
 		//Este primer WHILE es para controlar los eventos del mouse
@@ -242,6 +244,11 @@ void gameEngine::ReceiveCommands() {
 				cout << "benvingut" << endl;
 				welcome = true;			
 
+				//guardo la meva id
+				uint8_t newId;
+				ims.Read(&newId);
+				me.id = newId;
+
 				//setejo la meva pos
 				uint8_t newX, newY;
 				ims.Read(&newX);
@@ -252,10 +259,10 @@ void gameEngine::ReceiveCommands() {
 				uint8_t numOthers;
 				ims.Read(&numOthers);
 				for (int i = 0; i < (int)numOthers; i++) {
-
+					ims.Read(&newId);
 					ims.Read(&newX);
 					ims.Read(&newY);
-					Player temp(newX, newY, Color::Red);
+					Player temp(newX, newY, Color::Red, newId);
 
 					others.push_back(temp);
 				}
@@ -272,12 +279,16 @@ void gameEngine::ReceiveCommands() {
 			//guardem id del msg
 			uint16_t packetId;
 			ims.Read(&packetId);
-
+			
+			//Guardem id del player
+			uint8_t newId;
+			ims.Read(&newId);
+			cout << (int)newId << endl;
 			//ens guardem el nou jugador
 			uint8_t newX, newY;
 			ims.Read(&newX);
 			ims.Read(&newY);			
-			others.push_back(Player(newX, newY, Color::Red));
+			others.push_back(Player(newX, newY, Color::Red, newId));
 
 			SendACK(packetId);
 
@@ -298,5 +309,9 @@ void gameEngine::SendACK(int msgId) {
 	//POSAR PARTIAL
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 	//I GUARDAR EN EL LLISTA PER ANAR REENVIANT
+}
+
+bool gameEngine::CheckIfNew(Player p2Check) {
+	
 }
 

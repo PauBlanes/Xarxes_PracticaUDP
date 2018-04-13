@@ -33,5 +33,6 @@ public:
 	void ReceiveCommands();
 	void SendCommands(CommandType cmd); //FER RANDOM PER NOMES ENVIAR A VEGADES
 	void SendACK(int msgId);
+	bool CheckIfNew(Player);
 };
 

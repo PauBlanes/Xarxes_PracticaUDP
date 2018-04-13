@@ -23,7 +23,7 @@ private:
 	string  myName;
 public:
 	Player();
-	Player(uint8_t x, uint8_t y, sf::Color myColor);
+	Player(uint8_t x, uint8_t y, sf::Color myColor, uint8_t);
 	~Player();
 
 	bool activated;
@@ -34,6 +34,6 @@ public:
 	bool receivePos();
 	void setMyName(string);
 	string getMyName();
-	
+	uint8_t id;
 };
 
