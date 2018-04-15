@@ -7,10 +7,11 @@ struct Coordinates {
 };
 
 enum CommandType {
-	EMPTY, HELLO, WC, NEWPLAYER, PING, ACK, DISCONNECTED
+	EMPTY, HELLO, WC, NEWPLAYER, ACK, DISCONNECTED, POS
 };
 
 struct InputCommand {
-	Coordinates delta;
+	uint16_t deltaX; //la pantalla te 576
+	uint16_t deltaY;
 	uint8_t idMove;	
 };

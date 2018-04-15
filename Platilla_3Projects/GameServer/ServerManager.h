@@ -6,7 +6,8 @@
 #include <time.h>
 
 #define RESEND_TIME 500
-#define PERCENTAGE_PACKET_LOSS 75
+#define PERCENTAGE_PACKET_LOSS 0
+#define SEND_POS_WAIT_TIME 100
 
 struct Mesage {
 	char* buffer;
@@ -30,6 +31,8 @@ private:
 	map<uint8_t, ClientProxy> clients; //idClient, client
 
 	UdpSocket socket;
+
+	Clock sendPosClock;
 public:
 	ServerManager();
 	void Send(char*, int, IpAddress, unsigned short, bool);
@@ -39,5 +42,5 @@ public:
 	void ResendCriticalMsgs();
 	void AddClientIfNew(IpAddress, unsigned short);
 	Coordinates GenerateNewPos();
-	ClientProxy GetClient(uint8_t);
+	ClientProxy GetClient(uint8_t); 
 };

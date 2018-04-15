@@ -3,6 +3,6 @@
 
 int main()
 {
-	gameEngine gM;
+	GameEngine gM;
 	return 0;
 }

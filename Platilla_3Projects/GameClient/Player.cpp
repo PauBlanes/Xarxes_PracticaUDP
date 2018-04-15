@@ -17,13 +17,15 @@
 Player::Player()
 {
 	myColor = sf::Color::Yellow;
+	speed = 5;
 }
 
 Player::Player(uint8_t x, uint8_t y, sf::Color col, uint8_t myId)
 {
-	position = { x,y };
+	position = { (float)x,(float)y };
 	myColor = col;
 	id = myId;
+	speed = 5;
 }
 
 
@@ -36,9 +38,9 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window) {
 	
 	sprite.setRadius(RADIO_AVATAR);
 	sprite.setFillColor(myColor);
-	sf::Vector2f M_posicion(position.x,position.y);
-	M_posicion = BoardToWindows(M_posicion);
-	sprite.setPosition(M_posicion);
+	//sf::Vector2f M_posicion(position.x,position.y);
+	//position = BoardToWindows(position);
+	sprite.setPosition(position);
 
 	window->draw(sprite);
 
@@ -46,12 +48,11 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window) {
 }
 
 void Player::setMyPos(uint8_t x, uint8_t y) {
-	position = {x,y};
-	
+	position = {(float)x,(float)y};	
 	if (!activated)
 		activated = true;
 };
-POSITION Player::getMyPos() {
+Vector2f Player::getMyPos() {
 	return position;
 };
 

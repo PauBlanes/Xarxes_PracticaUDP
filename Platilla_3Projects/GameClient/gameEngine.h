@@ -16,23 +16,29 @@ using namespace sf;
 using namespace std;
 
 #define PORT 50000
+#define SEND_POS_TIME 150
 
-class gameEngine
+class GameEngine
 {
 private:
 	bool welcome;
 	UdpSocket socket;
 	string nick;
 	IpAddress ip;
+	
+	InputCommand iC;
+	Clock sendPosClock;
+
 public:
 	Player me;
 	vector<Player> others;
-	gameEngine();
-	~gameEngine();
+	GameEngine();
+	~GameEngine();
 	void startGame();	
 	void ReceiveCommands();
 	void SendCommands(CommandType cmd); //FER RANDOM PER NOMES ENVIAR A VEGADES
 	void SendACK(int msgId);
-	bool CheckIfNew(Player);
+	bool CheckIfNew(uint8_t);
+	void SendPosRoutine();
 };
 

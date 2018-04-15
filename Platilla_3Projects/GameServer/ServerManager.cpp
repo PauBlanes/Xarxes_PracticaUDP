@@ -38,7 +38,7 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 	//Simulem perdua de paquets
 	srand(time(nullptr));
 	int rnd = rand() % 100;	
-	if (rnd > PERCENTAGE_PACKET_LOSS) {
+	if (rnd >= PERCENTAGE_PACKET_LOSS) {
 		msg = { m,l,i,p };
 
 		//FER EL PARTIAL
@@ -59,16 +59,16 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 void ServerManager::Send(Mesage msg, bool isCritical) {
 
 	//Simulem perdua de paquets
-	//srand(time(nullptr));
-	//int rnd = rand() % 100;
-	//if (rnd > PERCENTAGE_PACKET_LOSS) {
+	srand(time(nullptr));
+	int rnd = rand() % 100;
+	if (rnd >= PERCENTAGE_PACKET_LOSS) {
 		//FER EL PARTIAL
 	
 		socket.send(msg.buffer, msg.len, msg.ip, msg.port);		
-	//}
-	/*else {
+	}
+	else {
 		cout << "Packet perdido en las profundidades de la red" << endl;
-	}*/
+	}
 
 	//guardem el missatge pq es critic i actualitzem el id de packet
 	if (isCritical) {
@@ -103,7 +103,7 @@ void ServerManager::ReceiveCommand() {
 		case ACK:
 		{
 			//ens guardem id de missatge
-			uint8_t msgId;
+			uint16_t msgId;
 			ims.Read(&msgId);
 
 			//borrem el missatge de la llista de pendents
@@ -112,6 +112,32 @@ void ServerManager::ReceiveCommand() {
 				criticalPackets.erase(it);
 
 			break;
+		}
+		case POS: 
+		{
+			//ens guardem quin jugador és
+			uint8_t clientID;
+			ims.Read(&clientID);
+
+			uint8_t moveID;
+			ims.Read(&moveID);
+			
+			uint16_t newX, newY;
+			ims.Read(&newX);
+			ims.Read(&newY);
+
+			//VALIDEM EL QUE CALGUI
+
+			//Setegem el client que toca
+			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
+			if (it != clients.end()) {
+				it->second.currMovState.idMove = moveID;
+				it->second.currMovState.deltaX = newX;
+				it->second.currMovState.deltaY = newY;
+			}
+			
+			break;
+			
 		}
 		default:
 			break;
@@ -139,7 +165,7 @@ void ServerManager::AddClientIfNew(IpAddress newIp, unsigned short newPort) {
 
 		//Generem nova pos
 		//GenerateNewPos();
-		Coordinates newPos{ clientIndex, clientIndex };
+		Coordinates newPos{ clientIndex*64 + 5, clientIndex* 64 +5 };
 		
 		//Afegim el nou client al mapa
 		ClientProxy newClient(newIp, newPort, newPos);		
@@ -207,6 +233,30 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		
 		break;
 	}
+	case POS:
+	{
+		//capcelera
+		oms.Write((uint8_t)CommandType::POS);
+		oms.Write(clientId);
+		//afegim nostra info
+		oms.Write(receiverClient.currMovState.idMove);
+		oms.Write(receiverClient.currMovState.deltaX);
+		oms.Write(receiverClient.currMovState.deltaY);
+		//afegim pos dels altres
+		oms.Write((uint8_t)(clients.size()-1));
+		
+		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+			if (it->first != clientId) {				
+				oms.Write(it->first);				
+				oms.Write(it->second.currMovState.deltaX);
+				oms.Write(it->second.currMovState.deltaY);
+			}
+		}
+
+		//enviem		
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
+		break;
+	}
 	}
 
 }
@@ -229,5 +279,15 @@ void ServerManager::ResendCriticalMsgs() {
 		}
 		
 		resendClock.restart();
+	}
+
+	currTime = sendPosClock.getElapsedTime();
+	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {
+
+		for (int i = 0; i < clients.size(); i++) {			
+			SendCommand(i, POS);
+		}
+
+		sendPosClock.restart();
 	}
 }

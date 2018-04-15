@@ -1,17 +1,21 @@
 ﻿  gameEngine.cpp
-gameEngine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(176): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(186): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
-gameEngine.cpp(186): warning C4309: 'argument': truncation of constant value
-gameEngine.cpp(187): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
-gameEngine.cpp(187): warning C4309: 'argument': truncation of constant value
-gameEngine.cpp(204): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(230): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(181): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(189): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(190): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(191): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(191): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(191): warning C4309: 'argument': truncation of constant value
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(192): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(192): warning C4309: 'argument': truncation of constant value
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(192): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(236): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(321): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(334): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
   Generating code
-  6 of 172 functions ( 3.5%) were compiled, the rest were copied from previous compilation.
+  8 of 180 functions ( 4.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    13 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.pdb (Full PDB)
+  GameClient.vcxproj -> C:\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe

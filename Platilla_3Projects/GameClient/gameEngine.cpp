@@ -40,7 +40,7 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 
 
 
-gameEngine::gameEngine()
+GameEngine::GameEngine()
 {
 
 	//cout << "Write your username : " << endl;
@@ -81,11 +81,11 @@ gameEngine::gameEngine()
 }
 
 
-gameEngine::~gameEngine()
+GameEngine::~GameEngine()
 {
 }
 
-void gameEngine::startGame() {
+void GameEngine::startGame() {
 	
 	sf::Vector2f casillaOrigen, casillaDestino;
 	
@@ -96,8 +96,9 @@ void gameEngine::startGame() {
 	{
 		//comprovem comandos
 		ReceiveCommands();
-
-	
+		
+		//enviem la delta de la pos periodicament
+		SendPosRoutine();
 
 		sf::Event event;
 
@@ -112,16 +113,20 @@ void gameEngine::startGame() {
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
-					me.setMyPos(me.getMyPos().x-1,me.getMyPos().y);
+					//me.setMyPos(me.getMyPos().x-1,me.getMyPos().y);
+					iC.deltaX--;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
-					me.setMyPos(me.getMyPos().x + 1, me.getMyPos().y);
+					//me.setMyPos(me.getMyPos().x + 1, me.getMyPos().y);
+					iC.deltaX++;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y-1);
+					//me.setMyPos(me.getMyPos().x, me.getMyPos().y-1);
+					iC.deltaY--;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 1);
+					//me.setMyPos(me.getMyPos().x, me.getMyPos().y + 1);
+					iC.deltaY++;
 				}
 			break;
 
@@ -192,13 +197,14 @@ void gameEngine::startGame() {
 		
 		for each (Player p in others)
 		{
+			
 			p.Draw(&window);
 		}
 		
 
 		
 			//en el principio marco con un recuadro amarillo para identificar.
-			if (casillaMarcada)
+			/*if (casillaMarcada)
 			{
 				sf::RectangleShape rect(sf::Vector2f(LADO_CASILLA, LADO_CASILLA));
 				rect.setPosition(sf::Vector2f(me.getMyPos().x*LADO_CASILLA, me.getMyPos().y*LADO_CASILLA));
@@ -206,14 +212,14 @@ void gameEngine::startGame() {
 				rect.setOutlineThickness(5);
 				rect.setOutlineColor(sf::Color::Yellow);
 				window.draw(rect);
-			}
+			}*/
 		
 
 		window.display();
 	}
 }
 
-void gameEngine::ReceiveCommands() {
+void GameEngine::ReceiveCommands() {
 	//Packet rPack;
 	IpAddress ipAddr;
 	unsigned short newPort;
@@ -254,7 +260,7 @@ void gameEngine::ReceiveCommands() {
 				ims.Read(&newX);
 				ims.Read(&newY);
 				me.setMyPos(newX, newY);
-
+				//cout << (int)newX << "," << (int)newY << endl;
 				//Setejo la posicio dels altres
 				uint8_t numOthers;
 				ims.Read(&numOthers);
@@ -283,14 +289,52 @@ void gameEngine::ReceiveCommands() {
 			//Guardem id del player
 			uint8_t newId;
 			ims.Read(&newId);
-			cout << (int)newId << endl;
-			//ens guardem el nou jugador
-			uint8_t newX, newY;
-			ims.Read(&newX);
-			ims.Read(&newY);			
-			others.push_back(Player(newX, newY, Color::Red, newId));
+			
+			//si és nou ens guardem el nou jugador
+			if (CheckIfNew(newId)) {
+				
+				uint8_t newX, newY;
+				ims.Read(&newX);
+				ims.Read(&newY);
+				others.push_back(Player(newX, newY, Color::Red, newId));
 
+			}
+			
 			SendACK(packetId);
+
+			break;
+		}
+		case POS: //per ara nomes amb la meva
+		{
+			//guardem id del player
+			uint8_t newID;
+			ims.Read(&newID);
+			
+			//guardem id del msg
+			uint8_t packetId;
+			ims.Read(&packetId);			
+			
+			uint16_t newX, newY;
+			ims.Read(&newX);
+			ims.Read(&newY);
+			//setejo meva pos
+			me.setMyPos(me.getMyPos().x + newX, me.getMyPos().y + newY);
+			
+			//setejo pos dels altres
+			uint8_t numOthers;
+			ims.Read(&numOthers);
+								
+			for (int i = 0; i < numOthers; i++) {				
+				ims.Read(&newID);
+				
+				for (int j = 0; j < others.size(); j++) {
+					if (others[j].id == newID) {						
+						ims.Read(&newX);
+						ims.Read(&newY);						
+						others[j].setMyPos((others[j].getMyPos().x) + newX, (others[j].getMyPos().y) + newY);
+					}
+				}
+			}		
 
 			break;
 		}
@@ -300,7 +344,7 @@ void gameEngine::ReceiveCommands() {
 	}
 
 }
-void gameEngine::SendACK(int msgId) {
+void GameEngine::SendACK(int msgId) {
 	
 	OutputMemoryStream oms;
 	oms.Write((uint8_t)CommandType::ACK);
@@ -311,7 +355,45 @@ void gameEngine::SendACK(int msgId) {
 	//I GUARDAR EN EL LLISTA PER ANAR REENVIANT
 }
 
-bool gameEngine::CheckIfNew(Player p2Check) {
+void GameEngine::SendCommands(CommandType cmd) {
 	
+	OutputMemoryStream oms;
+	
+	switch (cmd)
+	{	
+	case POS:
+		//cout << (int)iC.deltaX << "," << (int)iC.deltaY << endl;
+		oms.Write((uint8_t)CommandType::POS);
+		oms.Write(me.id);
+		//cout << (int)iC.idMove << endl;
+		oms.Write(iC.idMove); iC.idMove++;		
+		oms.Write(iC.deltaX);
+		oms.Write(iC.deltaY);
+
+		socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
+		break;
+	
+	default:
+		break;
+	}
+}
+
+bool GameEngine::CheckIfNew(uint8_t p2Check) {
+	for each (Player p in others)
+	{
+		if (p2Check == p.id)
+			return false;
+	}
+	return true;
+}
+
+void GameEngine::SendPosRoutine() {
+	Time currTime = sendPosClock.getElapsedTime();
+	if (currTime.asMilliseconds() > SEND_POS_TIME) {
+
+		SendCommands(POS);
+		iC.deltaX = iC.deltaY = 0;
+		sendPosClock.restart();
+	}
 }
 
