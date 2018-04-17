@@ -6,7 +6,7 @@
 #include <time.h>
 
 #define RESEND_TIME 500
-#define PERCENTAGE_PACKET_LOSS 0
+#define PERCENTAGE_PACKET_LOSS 10
 #define SEND_POS_WAIT_TIME 100
 
 struct Mesage {

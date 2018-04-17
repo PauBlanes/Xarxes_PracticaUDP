@@ -33,14 +33,13 @@ ServerManager::ServerManager() {
 
 void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool isCritical) {
 	
-	Mesage msg;
+	Mesage msg { m,l,i,p };
 
 	//Simulem perdua de paquets
 	srand(time(nullptr));
 	int rnd = rand() % 100;	
 	if (rnd >= PERCENTAGE_PACKET_LOSS) {
-		msg = { m,l,i,p };
-
+		
 		//FER EL PARTIAL
 		socket.send(msg.buffer, msg.len, msg.ip, msg.port);			
 	}
@@ -65,9 +64,10 @@ void ServerManager::Send(Mesage msg, bool isCritical) {
 		//FER EL PARTIAL
 	
 		socket.send(msg.buffer, msg.len, msg.ip, msg.port);		
+		
 	}
 	else {
-		cout << "Packet perdido en las profundidades de la red" << endl;
+		cout << "Packet perdut" << endl;
 	}
 
 	//guardem el missatge pq es critic i actualitzem el id de packet
@@ -110,7 +110,7 @@ void ServerManager::ReceiveCommand() {
 			map<uint16_t, Mesage>::iterator it = criticalPackets.find(msgId);
 			if (it != criticalPackets.end())
 				criticalPackets.erase(it);
-
+			cout << "Rebut ack, Tamany packets critics " << criticalPackets.size() << endl;
 			break;
 		}
 		case POS: 

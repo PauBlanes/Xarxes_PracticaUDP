@@ -301,6 +301,7 @@ void GameEngine::ReceiveCommands() {
 			}
 			
 			SendACK(packetId);
+			cout << "sending ack of new player" << endl;
 
 			break;
 		}
