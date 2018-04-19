@@ -11,7 +11,7 @@ enum CommandType {
 };
 
 struct InputCommand {
-	uint16_t deltaX; //la pantalla te 576
-	uint16_t deltaY;
-	uint8_t idMove;	
+	uint16_t deltaX = 0; //la pantalla te 576
+	uint16_t deltaY = 0;
+	uint8_t idMove = 0;	
 };

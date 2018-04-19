@@ -105,6 +105,7 @@ void GameEngine::startGame() {
 		//Este primer WHILE es para controlar los eventos del mouse
 		while (window.pollEvent(event))
 		{
+			//cout << others.size() << endl;
 			switch (event.type)
 			{
 			case sf::Event::Closed:
@@ -129,36 +130,6 @@ void GameEngine::startGame() {
 					iC.deltaY++;
 				}
 			break;
-
-			case sf::Event::MouseButtonPressed:
-				if (event.mouseButton.button == sf::Mouse::Left)
-				{
-					int x = event.mouseButton.x;
-					int y = event.mouseButton.y;
-					/*if (!casillaMarcada)
-					{
-						casillaOrigen = TransformaCoordenadaACasilla(x, y);
-						casillaMarcada = true;
-						//TODO: Comprobar que la casilla marcada coincide con las posición del raton (si le toca al ratón)
-						//o con la posicion de alguna de las piezas del gato (si le toca al gato)
-
-					}
-					else
-					{
-						casillaDestino = TransformaCoordenadaACasilla(x, y);
-						if (casillaOrigen.x == casillaDestino.x && casillaOrigen.y == casillaDestino.y)
-						{
-							casillaMarcada = false;
-							//Si me vuelven a picar sobre la misma casilla, la desmarco
-						}
-						else
-						{
-							
-						}
-					}*/
-				}
-				break;
-
 			default:
 				break;
 
@@ -186,10 +157,10 @@ void GameEngine::startGame() {
 		//draw my pos
 		
 		//set limit del mapa
-		if (me.getMyPos().x < 0) me.setMyPos(0, me.getMyPos().y);
+		/*if (me.getMyPos().x < 0) me.setMyPos(0, me.getMyPos().y);
 		if (me.getMyPos().y < 0) me.setMyPos(me.getMyPos().x, 0);
 		if (me.getMyPos().x > 576) me.setMyPos(576, me.getMyPos().y);
-		if (me.getMyPos().y > 576) me.setMyPos(me.getMyPos().x, 576);
+		if (me.getMyPos().y > 576) me.setMyPos(me.getMyPos().x, 576);*/
 
 		//Pintar pj
 		if (me.activated)
@@ -265,12 +236,13 @@ void GameEngine::ReceiveCommands() {
 				uint8_t numOthers;
 				ims.Read(&numOthers);
 				for (int i = 0; i < (int)numOthers; i++) {
-					ims.Read(&newId);
-					ims.Read(&newX);
-					ims.Read(&newY);
-					Player temp(newX, newY, Color::Red, newId);
-
-					others.push_back(temp);
+					uint8_t provaID = 0;
+					uint16_t provaX = 0;uint16_t provaY = 0;
+					ims.Read(&provaID);
+					ims.Read(&provaX);
+					ims.Read(&provaY);
+					cout << (int)provaID << endl;
+					others.push_back(Player(provaX, provaY, Color::Red, provaID));
 				}
 				//Obrir la mapa
 				startGame();
@@ -312,17 +284,17 @@ void GameEngine::ReceiveCommands() {
 			ims.Read(&newID);
 			
 			//guardem id del msg
-			uint8_t packetId;
+			uint8_t packetId = 0;
 			ims.Read(&packetId);			
 			
-			uint16_t newX, newY;
+			uint16_t newX = 0; uint16_t newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
-			//setejo meva pos
+			//setejo meva pos			
 			me.setMyPos(me.getMyPos().x + newX, me.getMyPos().y + newY);
 			
 			//setejo pos dels altres
-			uint8_t numOthers;
+			/*uint8_t numOthers;
 			ims.Read(&numOthers);
 								
 			for (int i = 0; i < numOthers; i++) {				
@@ -335,7 +307,7 @@ void GameEngine::ReceiveCommands() {
 						others[j].setMyPos((others[j].getMyPos().x) + newX, (others[j].getMyPos().y) + newY);
 					}
 				}
-			}		
+			}*/		
 
 			break;
 		}
@@ -391,10 +363,11 @@ bool GameEngine::CheckIfNew(uint8_t p2Check) {
 void GameEngine::SendPosRoutine() {
 	Time currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
-
-		SendCommands(POS);
-		iC.deltaX = iC.deltaY = 0;
-		sendPosClock.restart();
+		if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
+			SendCommands(POS);
+			iC.deltaX = iC.deltaY = 0;
+			sendPosClock.restart();
+		}		
 	}
 }
 

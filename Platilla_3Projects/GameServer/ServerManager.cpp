@@ -41,7 +41,7 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 	if (rnd >= PERCENTAGE_PACKET_LOSS) {
 		
 		//FER EL PARTIAL
-		socket.send(msg.buffer, msg.len, msg.ip, msg.port);			
+		socket.send(msg.buffer, msg.len, msg.ip, msg.port);		
 	}
 	else {
 		cout << "Packet perdido en las profundidades de la red" << endl;
@@ -119,15 +119,13 @@ void ServerManager::ReceiveCommand() {
 			uint8_t clientID;
 			ims.Read(&clientID);
 
-			uint8_t moveID;
+			uint8_t moveID = 0;
 			ims.Read(&moveID);
 			
-			uint16_t newX, newY;
+			uint16_t newX = 0; uint16_t newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
-
-			//VALIDEM EL QUE CALGUI
-
+			
 			//Setegem el client que toca
 			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
 			if (it != clients.end()) {
@@ -135,7 +133,7 @@ void ServerManager::ReceiveCommand() {
 				it->second.currMovState.deltaX = newX;
 				it->second.currMovState.deltaY = newY;
 			}
-			
+			//RESETEJO ELS DELTES PQ AIXI SI NO EM TORNEN A ENVIAR RES NO CALDRE QUE RESPONGUI RES
 			break;
 			
 		}
@@ -206,9 +204,9 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != (--clients.end()); it++) {
 			oms.Write(it->first);
 			oms.Write(it->second.position.x);
-			oms.Write(it->second.position.y);
+			oms.Write(it->second.position.y);			
 		}
-
+		
 		//enviem, el propi send ja el guardara si es critic		
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false);
 		
@@ -233,12 +231,13 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		
 		break;
 	}
-	case POS:
+	case POS: //Si es 0 no envio, per tant s'ha de canviar estructura del missatge
 	{
+		
 		//capcelera
 		oms.Write((uint8_t)CommandType::POS);
 		oms.Write(clientId);
-		//afegim nostra info
+		//afegim nostra info		
 		oms.Write(receiverClient.currMovState.idMove);
 		oms.Write(receiverClient.currMovState.deltaX);
 		oms.Write(receiverClient.currMovState.deltaY);
@@ -274,7 +273,7 @@ void ServerManager::ResendCriticalMsgs() {
 		
 		for (map<uint16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
 			
-			Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
+			//Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
 			
 		}
 		
@@ -283,9 +282,9 @@ void ServerManager::ResendCriticalMsgs() {
 
 	currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {
-
+		//VALIDEM LA POSICIO
 		for (int i = 0; i < clients.size(); i++) {			
-			SendCommand(i, POS);
+			//SendCommand(i, POS);
 		}
 
 		sendPosClock.restart();

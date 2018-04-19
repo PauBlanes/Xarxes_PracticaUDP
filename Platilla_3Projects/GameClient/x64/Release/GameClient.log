@@ -1,20 +1,12 @@
 ﻿  gameEngine.cpp
 gameEngine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 gameEngine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(181): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(189): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
-gameEngine.cpp(190): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
-gameEngine.cpp(191): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
-gameEngine.cpp(191): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
-gameEngine.cpp(191): warning C4309: 'argument': truncation of constant value
-gameEngine.cpp(192): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
-gameEngine.cpp(192): warning C4309: 'argument': truncation of constant value
-gameEngine.cpp(192): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
-gameEngine.cpp(236): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-gameEngine.cpp(321): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
-gameEngine.cpp(334): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+gameEngine.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+gameEngine.cpp(207): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+gameEngine.cpp(245): warning C4244: 'argument': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+gameEngine.cpp(294): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
   Generating code
-  9 of 175 functions ( 5.1%) were compiled, the rest were copied from previous compilation.
+  8 of 170 functions ( 4.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
