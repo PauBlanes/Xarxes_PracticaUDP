@@ -2,12 +2,12 @@
 #include <SFML\Network.hpp>
 
 struct Coordinates {
-	uint8_t x;
-	uint8_t y;
+	uint16_t x;
+	uint16_t y;
 };
 
 enum CommandType {
-	EMPTY, HELLO, WC, NEWPLAYER, ACK, DISCONNECTED, POS
+	EMPTY, HELLO, WC, NEWPLAYER, ACK, DISCONNECTED, TRYMOVE, OKMOVE, UPDATENEMIES
 };
 
 struct InputCommand {

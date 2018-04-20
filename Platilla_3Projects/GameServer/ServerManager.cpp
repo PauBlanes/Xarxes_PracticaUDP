@@ -113,7 +113,7 @@ void ServerManager::ReceiveCommand() {
 			cout << "Rebut ack, Tamany packets critics " << criticalPackets.size() << endl;
 			break;
 		}
-		case POS: 
+		case TRYMOVE: 
 		{
 			//ens guardem quin jugador és
 			uint8_t clientID;
@@ -193,18 +193,19 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		//Afegim capçalera
 		oms.Write((uint8_t)CommandType::WC);
-		oms.Write(packetId);
+		
 		//afegim la nostra pos
 		oms.Write(clientId);
 		oms.Write(receiverClient.position.x);
 		oms.Write(receiverClient.position.y);		
 		//afegim el numero de jugadors		
-		oms.Write((uint8_t)clients.size()-1); //pq ja ens hem afegit a nosaltres mateixos
+		oms.Write((uint8_t)(clients.size()-1)); //pq ja ens hem afegit a nosaltres mateixos
 		//Afegim info dels actuals
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != (--clients.end()); it++) {
 			oms.Write(it->first);
 			oms.Write(it->second.position.x);
-			oms.Write(it->second.position.y);			
+			oms.Write(it->second.position.y);
+			//cout << (int)it->second.position.x /*<< "," << it->second.position.y*/ << endl;
 		}
 		
 		//enviem, el propi send ja el guardara si es critic		
@@ -231,18 +232,29 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		
 		break;
 	}
-	case POS: //Si es 0 no envio, per tant s'ha de canviar estructura del missatge
-	{
-		
+	case OKMOVE: 
+	{		
 		//capcelera
-		oms.Write((uint8_t)CommandType::POS);
-		oms.Write(clientId);
+		oms.Write((uint8_t)CommandType::OKMOVE);
+			
 		//afegim nostra info		
 		oms.Write(receiverClient.currMovState.idMove);
 		oms.Write(receiverClient.currMovState.deltaX);
 		oms.Write(receiverClient.currMovState.deltaY);
+
+		//Setegem a 0
+		map<uint8_t, ClientProxy>::iterator it = clients.find(clientId);
+		if (it != clients.end()) {			
+			it->second.currMovState.deltaX = 0;
+			it->second.currMovState.deltaY = 0;
+		}
+
+		//enviem		
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
+		
+		
 		//afegim pos dels altres
-		oms.Write((uint8_t)(clients.size()-1));
+		/*oms.Write((uint8_t)(clients.size()-1));
 		
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			if (it->first != clientId) {				
@@ -250,10 +262,9 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 				oms.Write(it->second.currMovState.deltaX);
 				oms.Write(it->second.currMovState.deltaY);
 			}
-		}
+		}*/
 
-		//enviem		
-		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
+		
 		break;
 	}
 	}
@@ -284,7 +295,10 @@ void ServerManager::ResendCriticalMsgs() {
 	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {
 		//VALIDEM LA POSICIO
 		for (int i = 0; i < clients.size(); i++) {			
-			//SendCommand(i, POS);
+			//Si la delta no ha canviat no envio
+			if (GetClient(i).currMovState.deltaX != 0 || GetClient(i).currMovState.deltaY != 0) {				
+				SendCommand(i, OKMOVE); //nomes s'enviara si hi ha hagut moviment
+			}
 		}
 
 		sendPosClock.restart();

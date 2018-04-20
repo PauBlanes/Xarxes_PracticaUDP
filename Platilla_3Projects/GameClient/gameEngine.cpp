@@ -212,10 +212,7 @@ void GameEngine::ReceiveCommands() {
 		switch (cmd)
 		{
 		case WC:
-		{
-			//guardem id del msg
-			uint16_t packetId;
-			ims.Read(&packetId);
+		{			
 
 			if (!welcome) {
 				cout << "benvingut" << endl;
@@ -227,7 +224,7 @@ void GameEngine::ReceiveCommands() {
 				me.id = newId;
 
 				//setejo la meva pos
-				uint8_t newX, newY;
+				uint16_t newX, newY;
 				ims.Read(&newX);
 				ims.Read(&newY);
 				me.setMyPos(newX, newY);
@@ -235,13 +232,14 @@ void GameEngine::ReceiveCommands() {
 				//Setejo la posicio dels altres
 				uint8_t numOthers;
 				ims.Read(&numOthers);
-				for (int i = 0; i < (int)numOthers; i++) {
+				
+				for (int i = 0; i < numOthers; i++) {				
 					uint8_t provaID = 0;
 					uint16_t provaX = 0;uint16_t provaY = 0;
-					ims.Read(&provaID);
+					ims.Read(&provaID);					
 					ims.Read(&provaX);
 					ims.Read(&provaY);
-					cout << (int)provaID << endl;
+					//cout << (int)provaX/* << "," << (int)provaY*/ << endl;
 					others.push_back(Player(provaX, provaY, Color::Red, provaID));
 				}
 				//Obrir la mapa
@@ -265,7 +263,7 @@ void GameEngine::ReceiveCommands() {
 			//si és nou ens guardem el nou jugador
 			if (CheckIfNew(newId)) {
 				
-				uint8_t newX, newY;
+				uint16_t newX, newY;
 				ims.Read(&newX);
 				ims.Read(&newY);
 				others.push_back(Player(newX, newY, Color::Red, newId));
@@ -277,11 +275,11 @@ void GameEngine::ReceiveCommands() {
 
 			break;
 		}
-		case POS: //per ara nomes amb la meva
+		case OKMOVE: //per ara nomes amb la meva
 		{
 			//guardem id del player
-			uint8_t newID;
-			ims.Read(&newID);
+			//uint8_t newID;
+			//ims.Read(&newID);
 			
 			//guardem id del msg
 			uint8_t packetId = 0;
@@ -334,15 +332,15 @@ void GameEngine::SendCommands(CommandType cmd) {
 	
 	switch (cmd)
 	{	
-	case POS:
+	case TRYMOVE:
 		//cout << (int)iC.deltaX << "," << (int)iC.deltaY << endl;
-		oms.Write((uint8_t)CommandType::POS);
+		oms.Write((uint8_t)CommandType::TRYMOVE);
 		oms.Write(me.id);
 		//cout << (int)iC.idMove << endl;
 		oms.Write(iC.idMove); iC.idMove++;		
 		oms.Write(iC.deltaX);
 		oms.Write(iC.deltaY);
-
+		
 		socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 		break;
 	
@@ -364,7 +362,7 @@ void GameEngine::SendPosRoutine() {
 	Time currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
 		if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
-			SendCommands(POS);
+			SendCommands(TRYMOVE);
 			iC.deltaX = iC.deltaY = 0;
 			sendPosClock.restart();
 		}		

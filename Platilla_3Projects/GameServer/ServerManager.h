@@ -7,7 +7,7 @@
 
 #define RESEND_TIME 500
 #define PERCENTAGE_PACKET_LOSS 0
-#define SEND_POS_WAIT_TIME 100
+#define SEND_POS_WAIT_TIME 200
 
 struct Mesage {
 	char* buffer;
