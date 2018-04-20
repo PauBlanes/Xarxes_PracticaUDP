@@ -103,11 +103,11 @@ void ServerManager::ReceiveCommand() {
 		case ACK:
 		{
 			//ens guardem id de missatge
-			uint16_t msgId;
+			int16_t msgId;
 			ims.Read(&msgId);
 
 			//borrem el missatge de la llista de pendents
-			map<uint16_t, Mesage>::iterator it = criticalPackets.find(msgId);
+			map<int16_t, Mesage>::iterator it = criticalPackets.find(msgId);
 			if (it != criticalPackets.end())
 				criticalPackets.erase(it);
 			cout << "Rebut ack, Tamany packets critics " << criticalPackets.size() << endl;
@@ -122,7 +122,7 @@ void ServerManager::ReceiveCommand() {
 			uint8_t moveID = 0;
 			ims.Read(&moveID);
 			
-			uint16_t newX = 0; uint16_t newY = 0;
+			int16_t newX = 0; int16_t newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
 			
@@ -266,6 +266,21 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		break;
 	}
+	case FORCETP:
+	{
+		//capcelera
+		oms.Write((uint8_t)CommandType::FORCETP);
+		//afegim la pos on ha de fer tp
+		map<uint8_t, ClientProxy>::iterator it = clients.find(clientId);
+		if (it != clients.end()) {
+			oms.Write(it->second.position.x);
+			oms.Write(it->second.position.y);
+		}
+		//enviem		
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false);
+		
+		break;
+	}
 	}
 
 }
@@ -281,7 +296,7 @@ void ServerManager::ResendCriticalMsgs() {
 	Time currTime = resendClock.getElapsedTime();
 	if (currTime.asMilliseconds() > RESEND_TIME) {
 		
-		for (map<uint16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
+		for (map<int16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
 			
 			//Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
 			
@@ -291,17 +306,30 @@ void ServerManager::ResendCriticalMsgs() {
 	}
 
 	currTime = sendPosClock.getElapsedTime();
-	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {
-		
-		//VALIDEM LA POSICIO
+	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {		
 
 		//enviem posicions
-		for (int i = 0; i < clients.size(); i++) {			
-			//Si la delta no ha canviat no envio
-			if (GetClient(i).currMovState.deltaX != 0 || GetClient(i).currMovState.deltaY != 0) {				
-				SendCommand(i, OKMOVE); //nomes s'enviara si hi ha hagut moviment				
+		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+			
+			//VALIDEM LA POSICIO			
+			int16_t testX = it->second.position.x + it->second.currMovState.deltaX;
+			int16_t testY = it->second.position.y + it->second.currMovState.deltaY;
+			if (testX < 590 && testX > 0 && testY < 590 && testY > 0) { //si es bona ens actualitzem la nostra i enviem ok
+				it->second.position.x = testX;
+				it->second.position.y = testY;
+				//Si la delta no ha canviat no envio
+				if (it->second.currMovState.deltaX != 0 || it->second.currMovState.deltaY != 0) {
+					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment				
+				}				
 			}
-			SendCommand(i, UPDATENEMIES); //també nomes s'enviara si s'han mogut i aixi reduïm el trafic
+			else { //si no es bona enviem que es teletransporti a l'antiga posicio
+				SendCommand(it->first, FORCETP);
+			}
+
+			SendCommand(it->first, UPDATENEMIES); //també nomes s'enviara si s'han mogut i aixi reduïm el trafic
+			
+
+			
 		}
 
 		//netegem els deltes

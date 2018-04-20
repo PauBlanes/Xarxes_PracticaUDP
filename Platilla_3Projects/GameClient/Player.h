@@ -25,13 +25,13 @@ private:
 	
 public:
 	Player();
-	Player(uint8_t x, uint8_t y, sf::Color myColor, uint8_t);
+	Player(int16_t x, int16_t y, sf::Color myColor, uint8_t);
 	~Player();
 
 	float speed;
 	bool activated;
 	sf::CircleShape Draw(sf::RenderWindow*);
-	void setMyPos(uint8_t, uint8_t);
+	void setMyPos(int16_t, int16_t);
 	Vector2f getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
 	bool receivePos();

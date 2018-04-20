@@ -20,7 +20,7 @@ Player::Player()
 	speed = 5;
 }
 
-Player::Player(uint8_t x, uint8_t y, sf::Color col, uint8_t myId)
+Player::Player(int16_t x, int16_t y, sf::Color col, uint8_t myId)
 {
 	position = { (float)x,(float)y };
 	myColor = col;
@@ -47,7 +47,7 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window) {
 	return sprite;
 }
 
-void Player::setMyPos(uint8_t x, uint8_t y) {
+void Player::setMyPos(int16_t x, int16_t y) {
 	position = {(float)x,(float)y};	
 	if (!activated)
 		activated = true;

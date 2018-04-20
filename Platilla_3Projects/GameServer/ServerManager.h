@@ -23,8 +23,8 @@ struct SendInfo {
 
 class ServerManager {
 private:
-	map<uint16_t, Mesage> criticalPackets; //idPacket, missatge+adress
-	uint16_t packetId;
+	map<int16_t, Mesage> criticalPackets; //idPacket, missatge+adress
+	int16_t packetId;
 	Clock resendClock;
 
 	int clientIndex;//per assignar id als clients quan els rebem

@@ -114,20 +114,20 @@ void GameEngine::startGame() {
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
-					//me.setMyPos(me.getMyPos().x-1,me.getMyPos().y);
-					iC.deltaX--;
+					me.setMyPos(me.getMyPos().x-3,me.getMyPos().y);
+					iC.deltaX-=3;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
-					//me.setMyPos(me.getMyPos().x + 1, me.getMyPos().y);
-					iC.deltaX++;
+					me.setMyPos(me.getMyPos().x + 3, me.getMyPos().y);
+					iC.deltaX+=3;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
-					//me.setMyPos(me.getMyPos().x, me.getMyPos().y-1);
-					iC.deltaY--;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y-3);
+					iC.deltaY-=3;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
-					//me.setMyPos(me.getMyPos().x, me.getMyPos().y + 1);
-					iC.deltaY++;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 3);
+					iC.deltaY+=3;
 				}
 			break;
 			default:
@@ -224,7 +224,7 @@ void GameEngine::ReceiveCommands() {
 				me.id = newId;
 
 				//setejo la meva pos
-				uint16_t newX, newY;
+				int16_t  newX, newY;
 				ims.Read(&newX);
 				ims.Read(&newY);
 				me.setMyPos(newX, newY);
@@ -235,7 +235,7 @@ void GameEngine::ReceiveCommands() {
 				
 				for (int i = 0; i < numOthers; i++) {				
 					uint8_t provaID = 0;
-					uint16_t provaX = 0;uint16_t provaY = 0;
+					int16_t  provaX = 0;int16_t  provaY = 0;
 					ims.Read(&provaID);					
 					ims.Read(&provaX);
 					ims.Read(&provaY);
@@ -253,7 +253,7 @@ void GameEngine::ReceiveCommands() {
 		case NEWPLAYER:
 		{
 			//guardem id del msg
-			uint16_t packetId;
+			int16_t  packetId;
 			ims.Read(&packetId);
 			
 			//Guardem id del player
@@ -263,7 +263,7 @@ void GameEngine::ReceiveCommands() {
 			//si és nou ens guardem el nou jugador
 			if (CheckIfNew(newId)) {
 				
-				uint16_t newX, newY;
+				int16_t  newX, newY;
 				ims.Read(&newX);
 				ims.Read(&newY);
 				others.push_back(Player(newX, newY, Color::Red, newId));
@@ -276,20 +276,17 @@ void GameEngine::ReceiveCommands() {
 			break;
 		}
 		case OKMOVE: //per ara nomes amb la meva
-		{
-			//guardem id del player
-			//uint8_t newID;
-			//ims.Read(&newID);
-			
+		{			
 			//guardem id del msg
 			uint8_t moveID = 0;
 			ims.Read(&moveID);			
 			
-			uint16_t newX = 0; uint16_t newY = 0;
+			int16_t  newX = 0; int16_t  newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
+			cout << "ok move to : " << me.getMyPos().x + newX << "," << me.getMyPos().y + newY << endl;
 			//setejo meva pos			
-			me.setMyPos(me.getMyPos().x + newX, me.getMyPos().y + newY);
+			//me.setMyPos(me.getMyPos().x + newX, me.getMyPos().y + newY);
 							
 
 			break;
@@ -307,7 +304,7 @@ void GameEngine::ReceiveCommands() {
 				
 				for (int j = 0; j < others.size(); j++) {
 					if (others[j].id == newID) {
-						uint16_t newX = 0; uint16_t newY = 0;
+						int16_t  newX = 0; int16_t  newY = 0;
 						ims.Read(&newX);
 						ims.Read(&newY);
 						
@@ -316,7 +313,16 @@ void GameEngine::ReceiveCommands() {
 				}
 			}
 			break;
-		}			
+		}
+		case FORCETP:
+		{
+			int16_t  newX = 0; int16_t  newY = 0;
+			ims.Read(&newX);
+			ims.Read(&newY);
+			//setejo meva pos			
+			me.setMyPos(newX, newY);
+			break;
+		}
 		default:
 			break;		
 		}
@@ -327,7 +333,7 @@ void GameEngine::SendACK(int msgId) {
 	
 	OutputMemoryStream oms;
 	oms.Write((uint8_t)CommandType::ACK);
-	oms.Write((uint16_t)msgId);
+	oms.Write((int16_t )msgId);
 
 	//POSAR PARTIAL
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
