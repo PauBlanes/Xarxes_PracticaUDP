@@ -22,10 +22,12 @@ Player::Player()
 
 Player::Player(int16_t x, int16_t y, sf::Color col, uint8_t myId)
 {
-	position = { (float)x,(float)y };
+	position = { (float)x,(float)y };	
 	myColor = col;
 	id = myId;
 	speed = 5;
+	
+	
 }
 
 
@@ -34,13 +36,26 @@ Player::~Player()
 
 }
 
-sf::CircleShape Player::Draw(sf::RenderWindow* window) {
+sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
+	
 	
 	sprite.setRadius(RADIO_AVATAR);
 	sprite.setFillColor(myColor);
 	//sf::Vector2f M_posicion(position.x,position.y);
 	//position = BoardToWindows(position);
-	sprite.setPosition(position);
+	//if (!interpolate || InterpPositions.empty()) {
+		sprite.setPosition(position);
+	//}
+	//else {		
+		//sprite.setPosition(InterpPositions[interpIndex]);	
+		//if (lerpIndex < InterpPositions.size()-1)
+			lerpIndex += 1;
+		cout << lerpIndex << " : " << (int)myColor.r << (int)myColor.g << (int)myColor.b << endl; //PQ SOLO SE SUMA EN EL JUGADOR PRINCIPAL(EL YELLOW)????
+	//}
+
+		
+		
+	
 
 	window->draw(sprite);
 
@@ -72,3 +87,21 @@ void Player::setMyName(string name) {
 string Player::getMyName() {
 	return myName;
 }
+
+void Player::CreateLerpPath(int16_t dX, int16_t dY) {
+	Vector2f start = position;
+	Vector2f end(position.x + dX, position.y + dY);	
+	
+	InterpPositions.clear();
+
+	for (int i = 0; i < 10; i++) { //donava problemes amb fer-ho amb float i
+		float step = i / 10;
+		Vector2f temp = (1 - step)*start + end * step;
+		InterpPositions.push_back(temp);		
+	}
+	
+	//index = 0;
+	
+}
+
+

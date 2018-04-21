@@ -164,12 +164,11 @@ void GameEngine::startGame() {
 
 		//Pintar pj
 		if (me.activated)
-			me.Draw(&window);
+			me.Draw(&window, false);
 		
 		for each (Player p in others)
-		{
-			
-			p.Draw(&window);
+		{			
+			p.Draw(&window, true);		
 		}
 		
 
@@ -307,8 +306,13 @@ void GameEngine::ReceiveCommands() {
 						int16_t  newX = 0; int16_t  newY = 0;
 						ims.Read(&newX);
 						ims.Read(&newY);
-						
-						others[j].setMyPos((others[j].getMyPos().x) + newX, (others[j].getMyPos().y) + newY);
+
+						//Setegem valors per interpolar
+						if (newX != 0 || newY != 0) {													
+							others[j].CreateLerpPath(newX, newY);
+							
+							//others[j].setMyPos((others[j].getMyPos().x) + newX, (others[j].getMyPos().y) + newY);
+						}						
 					}
 				}
 			}

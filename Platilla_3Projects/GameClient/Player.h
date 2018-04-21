@@ -10,6 +10,8 @@
 using namespace std;
 using namespace sf;
 
+#define INTERPOLATION_STEPS 10
+
 struct POSITION
 {
 	uint8_t x, y;
@@ -22,7 +24,7 @@ private:
 	sf::CircleShape sprite;
 	sf::Color myColor;
 	string  myName;	
-	
+	int lerpIndex;
 public:
 	Player();
 	Player(int16_t x, int16_t y, sf::Color myColor, uint8_t);
@@ -30,7 +32,7 @@ public:
 
 	float speed;
 	bool activated;
-	sf::CircleShape Draw(sf::RenderWindow*);
+	sf::CircleShape Draw(sf::RenderWindow*, bool);
 	void setMyPos(int16_t, int16_t);
 	Vector2f getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
@@ -38,6 +40,10 @@ public:
 	void setMyName(string);
 	string getMyName();
 	uint8_t id;
+
+	//Per fer interpolacio
+	vector<Vector2f> InterpPositions;
+	void CreateLerpPath(int16_t, int16_t);
 	
 };
 

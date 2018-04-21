@@ -1,4 +1,6 @@
-﻿  gameEngine.cpp
+﻿  Player.cpp
+c:\xarxes_practicaudp\platilla_3projects\gameclient\player.cpp(98): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  gameEngine.cpp
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(117): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
@@ -6,11 +8,10 @@ c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(121): warning
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(129): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
 c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(207): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(311): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
+c:\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(206): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
   Generating code
-  2 of 177 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
+  5 of 226 functions ( 2.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GameClient.vcxproj -> C:\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
