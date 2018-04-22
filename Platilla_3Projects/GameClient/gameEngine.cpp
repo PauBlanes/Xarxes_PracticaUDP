@@ -114,19 +114,19 @@ void GameEngine::startGame() {
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
-					me.setMyPos(me.getMyPos().x- 64,me.getMyPos().y);
+					me.setMyPos(me.getMyPos().x- LADO_CASILLA,me.getMyPos().y);
 					iC.deltaX-= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
-					me.setMyPos(me.getMyPos().x + 64, me.getMyPos().y);
+					me.setMyPos(me.getMyPos().x + LADO_CASILLA, me.getMyPos().y);
 					iC.deltaX+= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y- 64);
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y- LADO_CASILLA);
 					iC.deltaY-= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 64);
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y + LADO_CASILLA);
 					iC.deltaY+= LADO_CASILLA;
 				}
 			break;
@@ -274,7 +274,7 @@ void GameEngine::ReceiveCommands() {
 
 			break;
 		}
-		case OKMOVE: //per ara nomes amb la meva
+		case OKMOVE: 
 		{			
 			//guardem id del msg
 			uint8_t moveID = 0;
@@ -284,8 +284,6 @@ void GameEngine::ReceiveCommands() {
 			ims.Read(&newX);
 			ims.Read(&newY);
 			cout << "ok move to : " << me.getMyPos().x + newX << "," << me.getMyPos().y + newY << endl;
-			//setejo meva pos			
-			//me.setMyPos(me.getMyPos().x + newX, me.getMyPos().y + newY);
 							
 
 			break;
@@ -311,7 +309,7 @@ void GameEngine::ReceiveCommands() {
 						if (newX != 0 || newY != 0) {													
 							others[j].CreateLerpPath(newX, newY);
 							
-							//others[j].setMyPos((others[j].getMyPos().x) + newX, (others[j].getMyPos().y) + newY);
+							
 						}						
 					}
 				}
