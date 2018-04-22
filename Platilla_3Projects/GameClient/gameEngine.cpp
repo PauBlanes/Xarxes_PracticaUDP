@@ -114,20 +114,20 @@ void GameEngine::startGame() {
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
-					me.setMyPos(me.getMyPos().x- LADO_CASILLA,me.getMyPos().y);
-					iC.deltaX-= LADO_CASILLA;
+					me.setMyPos(me.getMyPos().x- 3,me.getMyPos().y);
+					iC.deltaX-= 3;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
-					me.setMyPos(me.getMyPos().x + LADO_CASILLA, me.getMyPos().y);
-					iC.deltaX+= LADO_CASILLA;
+					me.setMyPos(me.getMyPos().x + 3, me.getMyPos().y);
+					iC.deltaX+= 3;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y- LADO_CASILLA);
-					iC.deltaY-= LADO_CASILLA;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y- 3);
+					iC.deltaY-= 3;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y + LADO_CASILLA);
-					iC.deltaY+= LADO_CASILLA;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 3);
+					iC.deltaY+= 3;
 				}
 			break;
 			default:

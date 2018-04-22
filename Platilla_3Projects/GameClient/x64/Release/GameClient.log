@@ -1,1 +1,17 @@
-﻿  GameClient.vcxproj -> C:\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
+﻿  gameEngine.cpp
+C:\Users\飘雪柳絮\Desktop\Xarxes_PracticaUDP\Platilla_3Projects\GameLib\OutputMemoryStream.h : warning C4819: El archivo contiene un carácter que no se puede representar en la página de códigos actual (936). Guarde el archivo con formato Unicode para evitar la pérdida de datos
+C:\Users\飘雪柳絮\Desktop\Xarxes_PracticaUDP\Platilla_3Projects\GameLib\InputMemoryStream.h : warning C4819: El archivo contiene un carácter que no se puede representar en la página de códigos actual (936). Guarde el archivo con formato Unicode para evitar la pérdida de datos
+gameEngine.cpp(26): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+gameEngine.cpp(27): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+gameEngine.cpp(117): warning C4244: 'argumento': conversión de 'float' a 'int16_t'; posible pérdida de datos
+gameEngine.cpp(121): warning C4244: 'argumento': conversión de 'float' a 'int16_t'; posible pérdida de datos
+gameEngine.cpp(125): warning C4244: 'argumento': conversión de 'float' a 'int16_t'; posible pérdida de datos
+gameEngine.cpp(129): warning C4244: 'argumento': conversión de 'float' a 'int16_t'; posible pérdida de datos
+gameEngine.cpp(152): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+gameEngine.cpp(206): warning C4267: 'argumento': conversión de 'size_t' a 'uint32_t'; posible pérdida de datos
+  Generando código
+  8 of 243 functions ( 3.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
+  Generación de código finalizada
+  GameClient.vcxproj -> C:\Users\飘雪柳絮\Desktop\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
