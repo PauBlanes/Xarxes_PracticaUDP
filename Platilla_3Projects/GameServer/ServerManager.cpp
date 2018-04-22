@@ -326,7 +326,7 @@ void ServerManager::ResendCriticalMsgs() {
 				SendCommand(it->first, FORCETP);
 			}
 
-			SendCommand(it->first, UPDATENEMIES); //també nomes s'enviara si s'han mogut i aixi reduïm el trafic
+			SendCommand(it->first, UPDATENEMIES); //tamb?nomes s'enviara si s'han mogut i aixi reduïm el trafic
 			
 
 			

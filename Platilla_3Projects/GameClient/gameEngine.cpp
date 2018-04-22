@@ -114,20 +114,20 @@ void GameEngine::startGame() {
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
-					me.setMyPos(me.getMyPos().x-3,me.getMyPos().y);
-					iC.deltaX-=3;
+					me.setMyPos(me.getMyPos().x- 64,me.getMyPos().y);
+					iC.deltaX-= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
-					me.setMyPos(me.getMyPos().x + 3, me.getMyPos().y);
-					iC.deltaX+=3;
+					me.setMyPos(me.getMyPos().x + 64, me.getMyPos().y);
+					iC.deltaX+= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y-3);
-					iC.deltaY-=3;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y- 64);
+					iC.deltaY-= LADO_CASILLA;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
-					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 3);
-					iC.deltaY+=3;
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 64);
+					iC.deltaY+= LADO_CASILLA;
 				}
 			break;
 			default:
@@ -138,7 +138,7 @@ void GameEngine::startGame() {
 
 		window.clear();
 
-		//A partir de aquí es para pintar por pantalla
+		//A partir de aqu?es para pintar por pantalla
 		//Este FOR es para el tablero
 		for (int i = 0; i<10; i++)
 		{
