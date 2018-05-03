@@ -166,9 +166,9 @@ void GameEngine::startGame() {
 		if (me.activated)
 			me.Draw(&window, false);
 		
-		for each (Player p in others)
+		for (int i = 0; i < others.size(); i++)
 		{			
-			p.Draw(&window, true);		
+			others[i].Draw(&window, true);		
 		}
 		
 

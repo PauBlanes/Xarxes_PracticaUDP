@@ -133,7 +133,7 @@ void ServerManager::ReceiveCommand() {
 				it->second.currMovState.deltaX = newX;
 				it->second.currMovState.deltaY = newY;
 			}
-			//RESETEJO ELS DELTES PQ AIXI SI NO EM TORNEN A ENVIAR RES NO CALDRE QUE RESPONGUI RES
+			
 			break;
 			
 		}
@@ -277,7 +277,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 			oms.Write(it->second.position.y);
 		}
 		//enviem		
-		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false);
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //HA DE SER CRITIC?
 		
 		break;
 	}
@@ -326,7 +326,7 @@ void ServerManager::ResendCriticalMsgs() {
 				SendCommand(it->first, FORCETP);
 			}
 
-			SendCommand(it->first, UPDATENEMIES); //tamb?nomes s'enviara si s'han mogut i aixi reduïm el trafic
+			SendCommand(it->first, UPDATENEMIES); 
 			
 
 			

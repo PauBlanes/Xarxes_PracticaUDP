@@ -18,6 +18,8 @@ Player::Player()
 {
 	myColor = sf::Color::Yellow;
 	speed = 5;
+
+	lerpIndex = 0;
 }
 
 Player::Player(int16_t x, int16_t y, sf::Color col, uint8_t myId)
@@ -27,7 +29,7 @@ Player::Player(int16_t x, int16_t y, sf::Color col, uint8_t myId)
 	id = myId;
 	speed = 5;
 	
-	
+	lerpIndex = 0;
 }
 
 
@@ -43,16 +45,18 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
 	sprite.setFillColor(myColor);
 	//sf::Vector2f M_posicion(position.x,position.y);
 	//position = BoardToWindows(position);
-	//if (!interpolate || InterpPositions.empty()) {
+	if (!interpolate || InterpPositions.empty()) {
 		sprite.setPosition(position);
-	//}
-	//else {		
-		//sprite.setPosition(InterpPositions[interpIndex]);	
-		//if (lerpIndex < InterpPositions.size()-1)
-			lerpIndex += 1;
-		cout << lerpIndex << " : " << (int)myColor.r << (int)myColor.g << (int)myColor.b << endl; //PQ SOLO SE SUMA EL LERPINDEX EN EL JUGADOR PRINCIPAL(EL YELLOW)????
-	//}	
-
+	}
+	else {		
+		sprite.setPosition(InterpPositions[InterpPositions.size()-1]);
+		if (lerpIndex < InterpPositions.size() - 1) {
+			lerpIndex += 1;	
+			InterpPositions.erase(InterpPositions.begin());
+		}
+		//cout << lerpIndex << " : " << (int)myColor.r << (int)myColor.g << (int)myColor.b << endl; //PQ SOLO SE SUMA EL LERPINDEX EN EL JUGADOR PRINCIPAL(EL YELLOW)????
+	}	
+	
 	window->draw(sprite);
 
 	return sprite;
@@ -85,18 +89,30 @@ string Player::getMyName() {
 }
 
 void Player::CreateLerpPath(int16_t dX, int16_t dY) {
-	Vector2f start = position;
-	Vector2f end(position.x + dX, position.y + dY);	
+	Vector2f start; 
+	Vector2f end;
+	if (!InterpPositions.empty()) { //per no perdre coses si encara no hem arrivat al final i ens arriva un delta petit
+		start = { InterpPositions[InterpPositions.size() - 1].x, InterpPositions[InterpPositions.size() - 1].y };
+		end = { start.x + dX, start.y + dY };
+	}
+	else { //pq no peti el primer cop
+		start = this->sprite.getPosition();
+		end = { start.x + dX, start.y + dY };
+	}
+		
+	Vector2f distVec = start - end;
+	float dist = sqrt(distVec.x * distVec.x + distVec.y * distVec.y);
 	
-	InterpPositions.clear();
+	float numSteps = 10;
 
-	for (int i = 0; i < 10; i++) { //donava problemes amb fer-ho amb float i
-		float step = i / 10;
-		Vector2f temp = (1 - step)*start + end * step;
+	for (int i = 0; i < numSteps; i++) { 
+		float step = (float)i / numSteps;
+		Vector2f temp( (1 - step)*start.x + end.x * step, (1 - step)*start.y + end.y * step);
 		InterpPositions.push_back(temp);		
+		
 	}
 	
-	//index = 0;
+	lerpIndex = 0;
 	
 }
 
