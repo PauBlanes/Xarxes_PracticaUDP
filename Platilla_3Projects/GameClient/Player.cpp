@@ -43,16 +43,14 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
 	
 	sprite.setRadius(RADIO_AVATAR);
 	sprite.setFillColor(myColor);
-	//sf::Vector2f M_posicion(position.x,position.y);
-	//position = BoardToWindows(position);
 	if (!interpolate || InterpPositions.empty()) {
 		sprite.setPosition(position);
 	}
 	else {		
-		sprite.setPosition(InterpPositions[InterpPositions.size()-1]);
+		sprite.setPosition(InterpPositions[lerpIndex]);
 		if (lerpIndex < InterpPositions.size() - 1) {
 			lerpIndex += 1;	
-			InterpPositions.erase(InterpPositions.begin());
+			//InterpPositions.erase(InterpPositions.begin());
 		}
 		//cout << lerpIndex << " : " << (int)myColor.r << (int)myColor.g << (int)myColor.b << endl; //PQ SOLO SE SUMA EL LERPINDEX EN EL JUGADOR PRINCIPAL(EL YELLOW)????
 	}	
@@ -88,22 +86,17 @@ string Player::getMyName() {
 	return myName;
 }
 
-void Player::CreateLerpPath(int16_t dX, int16_t dY) {
-	Vector2f start; 
-	Vector2f end;
-	if (!InterpPositions.empty()) { //per no perdre coses si encara no hem arrivat al final i ens arriva un delta petit
-		start = { InterpPositions[InterpPositions.size() - 1].x, InterpPositions[InterpPositions.size() - 1].y };
-		end = { start.x + dX, start.y + dY };
-	}
-	else { //pq no peti el primer cop
-		start = this->sprite.getPosition();
-		end = { start.x + dX, start.y + dY };
-	}
+void Player::CreateLerpPath(int16_t endX, int16_t endY) {
+	Vector2f start = sprite.getPosition();
+	Vector2f end(endX, endY);
 		
+
 	Vector2f distVec = start - end;
 	float dist = sqrt(distVec.x * distVec.x + distVec.y * distVec.y);
 	
-	float numSteps = 10;
+	InterpPositions.clear();
+
+	float numSteps = 20*dist;
 
 	for (int i = 0; i < numSteps; i++) { 
 		float step = (float)i / numSteps;

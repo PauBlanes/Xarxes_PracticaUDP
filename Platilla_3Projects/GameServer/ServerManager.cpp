@@ -130,8 +130,8 @@ void ServerManager::ReceiveCommand() {
 			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
 			if (it != clients.end()) {
 				it->second.currMovState.idMove = moveID;
-				it->second.currMovState.deltaX = newX;
-				it->second.currMovState.deltaY = newY;
+				it->second.currMovState.xToCheck = newX;
+				it->second.currMovState.yToCheck = newY;
 			}
 			
 			break;
@@ -240,8 +240,8 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		//afegim nostra info		
 		oms.Write(receiverClient.currMovState.idMove);
-		oms.Write(receiverClient.currMovState.deltaX);
-		oms.Write(receiverClient.currMovState.deltaY);
+		oms.Write(receiverClient.currMovState.xToCheck);
+		oms.Write(receiverClient.currMovState.yToCheck);
 			
 
 		//enviem a tots
@@ -316,15 +316,17 @@ void ServerManager::ResendCriticalMsgs() {
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			
 			//VALIDEM LA POSICIO			
-			int16_t testX = it->second.position.x + it->second.currMovState.deltaX;
-			int16_t testY = it->second.position.y + it->second.currMovState.deltaY;
+			int16_t testX = /*it->second.position.x + */it->second.currMovState.xToCheck;
+			int16_t testY = /*it->second.position.y +*/ it->second.currMovState.yToCheck;
 			if (testX < 590 && testX > 0 && testY < 590 && testY > 0) { //si es bona ens actualitzem la nostra i enviem ok
+				
+				//Si la delta no ha canviat no envio
+				if (it->second.currMovState.xToCheck != it->second.position.x || it->second.currMovState.yToCheck != it->second.position.y) {
+					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment. AQUI ENVIEM A TOTHOM EL OK I DES DEL CLIENT JA VEURAN SI ÉS EL SEU				
+				}
+
 				it->second.position.x = testX;
 				it->second.position.y = testY;
-				//Si la delta no ha canviat no envio
-				if (it->second.currMovState.deltaX != 0 || it->second.currMovState.deltaY != 0) {
-					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment. AQUI ENVIEM A TOTHOM EL OK I DES DEL CLIENT JA VEURAN SI ÉS EL SEU				
-				}				
 			}
 			else { //si no es bona enviem que es teletransporti a l'antiga posicio
 				SendCommand(it->first, FORCETP);
@@ -339,8 +341,8 @@ void ServerManager::ResendCriticalMsgs() {
 		//netegem els deltes
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			
-			it->second.currMovState.deltaX = 0;
-			it->second.currMovState.deltaY = 0;
+			it->second.currMovState.xToCheck = 0;
+			it->second.currMovState.yToCheck = 0;
 			
 		}	
 

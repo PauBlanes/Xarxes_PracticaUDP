@@ -1,17 +1,8 @@
 ﻿  Player.cpp
-  gameEngine.cpp
-gameEngine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(117): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(121): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(129): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(206): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
   Generating code
-  8 of 251 functions ( 3.2%) were compiled, the rest were copied from previous compilation.
+  8 of 243 functions ( 3.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.pdb (Full PDB)

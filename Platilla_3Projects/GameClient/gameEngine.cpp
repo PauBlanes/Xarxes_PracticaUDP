@@ -115,19 +115,19 @@ void GameEngine::startGame() {
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
 					me.setMyPos(me.getMyPos().x- 3,me.getMyPos().y);
-					iC.deltaX-= 3;
+					//iC.deltaX-= 3;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
 					me.setMyPos(me.getMyPos().x + 3, me.getMyPos().y);
-					iC.deltaX+= 3;
+					//iC.deltaX+= 3;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
 					me.setMyPos(me.getMyPos().x, me.getMyPos().y- 3);
-					iC.deltaY-= 3;
+					//iC.deltaY-= 3;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
 					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 3);
-					iC.deltaY+= 3;
+					//iC.deltaY+= 3;
 				}
 			break;
 			default:
@@ -157,10 +157,6 @@ void GameEngine::startGame() {
 		//draw my pos
 		
 		//set limit del mapa
-		/*if (me.getMyPos().x < 0) me.setMyPos(0, me.getMyPos().y);
-		if (me.getMyPos().y < 0) me.setMyPos(me.getMyPos().x, 0);
-		if (me.getMyPos().x > 576) me.setMyPos(576, me.getMyPos().y);
-		if (me.getMyPos().y > 576) me.setMyPos(me.getMyPos().x, 576);*/
 
 		//Pintar pj
 		if (me.activated)
@@ -283,20 +279,21 @@ void GameEngine::ReceiveCommands() {
 			//guardem id del msg
 			uint8_t moveID = 0;
 			ims.Read(&moveID);			
-			//guardem pos
+			//guardem pos. AQUI NO SON DELTES SINO POS TOTAL
 			int16_t  newX = 0; int16_t  newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
 			
 			//si soc jo em guardo que vaig be
-			if (clientID == me.id)
-				cout << "ok move to : " << me.getMyPos().x + newX << "," << me.getMyPos().y + newY << endl;
+			if (clientID == me.id) {				
+				cout << "ok move to : " << newX << "," << newY << endl;
+			}
 			//si es un dels enemics fem la interpolacio
 			else if (newX != 0 || newY != 0) {
 				for (int i = 0; i < others.size(); i++) {
-					if (others[i].id == clientID) {
+					if (others[i].id == clientID) {												
 						others[i].CreateLerpPath(newX, newY);
-						cout << "move nmy to " << others[i].getMyPos().x + newX << "," << others[i].getMyPos().y + newY << endl;
+						cout << "move enemy to : " << newX << "," << newY << endl;
 					}
 				}
 			}						
@@ -369,8 +366,10 @@ void GameEngine::SendCommands(CommandType cmd) {
 		oms.Write(me.id);
 		//cout << (int)iC.idMove << endl;
 		oms.Write(iC.idMove); iC.idMove++;		
-		oms.Write(iC.deltaX);
-		oms.Write(iC.deltaY);
+		oms.Write((int16_t)me.getMyPos().x);
+		oms.Write((int16_t)me.getMyPos().y);
+		//oms.Write(iC.deltaX);
+		//oms.Write(iC.deltaY);
 		
 		socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 		break;
@@ -392,11 +391,11 @@ bool GameEngine::CheckIfNew(uint8_t p2Check) {
 void GameEngine::SendPosRoutine() {
 	Time currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
-		if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
-			SendCommands(TRYMOVE);
-			iC.deltaX = iC.deltaY = 0;
+		//if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
+			SendCommands(TRYMOVE);			
+			//iC.deltaX = 0; iC.deltaY = 0;
 			sendPosClock.restart();
-		}		
+		//}		
 	}
 }
 
