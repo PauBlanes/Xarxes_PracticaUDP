@@ -1,11 +1,12 @@
 #pragma once
 #include <SFML\Network.hpp>
 #include "GeneralInfo.h"
+#include <iostream>
 
 using namespace sf;
 using namespace std;
 
-#define DISCONECTION_WAIT_TIME 1000
+#define DISCONECTION_WAIT_TIME 2000
 
 class ClientProxy {
 public:

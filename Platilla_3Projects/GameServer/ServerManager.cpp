@@ -22,11 +22,11 @@ ServerManager::ServerManager() {
 		ResendCriticalMsgs();
 		
 		//Comprovem que no s'hagin desconectat
-		/*for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			if (it->second.CheckDisconnection()) {
-				cout << "Client " << it->first << "disconected" << endl;
-			}
-		}*/
+				cout << "Client " << (int)it->first << " disconected" << endl;
+			}			
+		}
 
 	}
 }
@@ -111,6 +111,8 @@ void ServerManager::ReceiveCommand() {
 			if (it != criticalPackets.end())
 				criticalPackets.erase(it);
 			cout << "Rebut ack, Tamany packets critics " << criticalPackets.size() << endl;
+						
+
 			break;
 		}
 		case TRYMOVE: 
@@ -131,11 +133,22 @@ void ServerManager::ReceiveCommand() {
 			if (it != clients.end()) {
 				it->second.currMovState.idMove = moveID;
 				it->second.currMovState.xToCheck = newX;
-				it->second.currMovState.yToCheck = newY;
+				it->second.currMovState.yToCheck = newY;				
 			}
 			
 			break;
 			
+		}
+		case PING:
+		{
+			//ens guardem quin jugador és
+			uint8_t clientID;
+			ims.Read(&clientID);
+			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
+			if (it != clients.end()) {				
+				it->second.disconectionClock.restart(); //resetegem temoritzador de desconexio
+			}			
+
 		}
 		default:
 			break;
@@ -339,12 +352,12 @@ void ServerManager::ResendCriticalMsgs() {
 		}
 
 		//netegem els deltes
-		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+		/*for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			
 			it->second.currMovState.xToCheck = 0;
 			it->second.currMovState.yToCheck = 0;
 			
-		}	
+		}	*/
 
 		sendPosClock.restart();
 	}

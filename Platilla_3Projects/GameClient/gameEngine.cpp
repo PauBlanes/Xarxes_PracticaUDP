@@ -97,7 +97,7 @@ void GameEngine::startGame() {
 		//comprovem comandos
 		ReceiveCommands();
 		
-		//enviem la delta de la pos periodicament
+		//enviem la pos periodicament
 		SendPosRoutine();
 
 		sf::Event event;
@@ -364,16 +364,19 @@ void GameEngine::SendCommands(CommandType cmd) {
 		//cout << (int)iC.deltaX << "," << (int)iC.deltaY << endl;
 		oms.Write((uint8_t)CommandType::TRYMOVE);
 		oms.Write(me.id);
-		//cout << (int)iC.idMove << endl;
+
 		oms.Write(iC.idMove); iC.idMove++;		
 		oms.Write((int16_t)me.getMyPos().x);
 		oms.Write((int16_t)me.getMyPos().y);
-		//oms.Write(iC.deltaX);
-		//oms.Write(iC.deltaY);
 		
 		socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 		break;
-	
+	case PING:
+		oms.Write((uint8_t)CommandType::PING);
+		oms.Write(me.id);
+
+		socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
+
 	default:
 		break;
 	}
@@ -392,7 +395,8 @@ void GameEngine::SendPosRoutine() {
 	Time currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
 		//if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
-			SendCommands(TRYMOVE);			
+			SendCommands(TRYMOVE);	
+			SendCommands(PING);
 			//iC.deltaX = 0; iC.deltaY = 0;
 			sendPosClock.restart();
 		//}		
