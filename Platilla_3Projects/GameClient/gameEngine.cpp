@@ -276,19 +276,34 @@ void GameEngine::ReceiveCommands() {
 		}
 		case OKMOVE: 
 		{			
+			//guardem id de a qui pertany el moviment
+			uint8_t clientID = 0;
+			ims.Read(&clientID);
+
 			//guardem id del msg
 			uint8_t moveID = 0;
 			ims.Read(&moveID);			
-			
+			//guardem pos
 			int16_t  newX = 0; int16_t  newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
-			cout << "ok move to : " << me.getMyPos().x + newX << "," << me.getMyPos().y + newY << endl;
-							
+			
+			//si soc jo em guardo que vaig be
+			if (clientID == me.id)
+				cout << "ok move to : " << me.getMyPos().x + newX << "," << me.getMyPos().y + newY << endl;
+			//si es un dels enemics fem la interpolacio
+			else if (newX != 0 || newY != 0) {
+				for (int i = 0; i < others.size(); i++) {
+					if (others[i].id == clientID) {
+						others[i].CreateLerpPath(newX, newY);
+						cout << "move nmy to " << others[i].getMyPos().x + newX << "," << others[i].getMyPos().y + newY << endl;
+					}
+				}
+			}						
 
 			break;
 		}
-		case UPDATENEMIES:
+		/*case UPDATENEMIES:
 		{
 			
 			//setejo pos dels altres
@@ -315,7 +330,7 @@ void GameEngine::ReceiveCommands() {
 				}
 			}
 			break;
-		}
+		}*/
 		case FORCETP:
 		{
 			int16_t  newX = 0; int16_t  newY = 0;

@@ -236,18 +236,22 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 	{		
 		//capcelera
 		oms.Write((uint8_t)CommandType::OKMOVE);
-			
+		oms.Write(clientId); //Afegim el idPlayer per des del client saber si és el nostre moviment o el de l'altre
+
 		//afegim nostra info		
 		oms.Write(receiverClient.currMovState.idMove);
 		oms.Write(receiverClient.currMovState.deltaX);
 		oms.Write(receiverClient.currMovState.deltaY);
 			
 
-		//enviem		
-		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part	
+		//enviem a tots
+		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+			Send(oms.GetBufferPtr(), oms.GetLength(), it->second.IP, it->second.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
+		}
+			
 		break;
 	}
-	case UPDATENEMIES:
+	/*case UPDATENEMIES:
 	{
 		//afegim pos dels altres
 		oms.Write((uint8_t)CommandType::UPDATENEMIES);
@@ -265,7 +269,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
 
 		break;
-	}
+	}*/
 	case FORCETP:
 	{
 		//capcelera
@@ -298,7 +302,7 @@ void ServerManager::ResendCriticalMsgs() {
 		
 		for (map<int16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
 			
-			//Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
+			Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
 			
 		}
 		
@@ -319,14 +323,14 @@ void ServerManager::ResendCriticalMsgs() {
 				it->second.position.y = testY;
 				//Si la delta no ha canviat no envio
 				if (it->second.currMovState.deltaX != 0 || it->second.currMovState.deltaY != 0) {
-					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment				
+					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment. AQUI ENVIEM A TOTHOM EL OK I DES DEL CLIENT JA VEURAN SI ÉS EL SEU				
 				}				
 			}
 			else { //si no es bona enviem que es teletransporti a l'antiga posicio
 				SendCommand(it->first, FORCETP);
 			}
 
-			SendCommand(it->first, UPDATENEMIES); 
+			//SendCommand(it->first, UPDATENEMIES); 
 			
 
 			
