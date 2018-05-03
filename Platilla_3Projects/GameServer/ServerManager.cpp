@@ -24,7 +24,9 @@ ServerManager::ServerManager() {
 		//Comprovem que no s'hagin desconectat
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			if (it->second.CheckDisconnection()) {
-				cout << "Client " << (int)it->first << " disconected" << endl;
+				cout << "Client " << (int)it->first << " disconected" << endl;				
+				SendCommand(it->first, DISCONNECTED);
+				clients.erase(it);
 			}			
 		}
 
@@ -297,6 +299,12 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //HA DE SER CRITIC?
 		
 		break;
+	}
+	case DISCONNECTED:
+	{
+		//capcelera
+		oms.Write((uint8_t)CommandType::DISCONNECTED);
+		oms.Write(clientId); //Afegim el idPlayer per des del client saber si és el nostre moviment o el de l'altre
 	}
 	}
 

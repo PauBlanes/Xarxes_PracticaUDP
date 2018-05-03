@@ -337,6 +337,18 @@ void GameEngine::ReceiveCommands() {
 			me.setMyPos(newX, newY);
 			break;
 		}
+		case DISCONNECTED:
+		{
+			//guardem id de a qui pertany el moviment
+			uint8_t clientID = 0;
+			ims.Read(&clientID);
+
+			for (int i = 0; i < others.size(); i++) {
+				if (others[i].id == clientID) {
+					others.erase(others.begin() + i);
+				}
+			}
+		}
 		default:
 			break;		
 		}
