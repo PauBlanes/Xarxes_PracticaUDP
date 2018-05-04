@@ -43,22 +43,15 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 GameEngine::GameEngine()
 {
 
-	//cout << "Write your username : " << endl;
-	//cin >> nick;
-
 	socket.setBlocking(false);
 
 	ip = IpAddress::getLocalAddress();
 	
-	//Packet helloPacket;
-	//helloPacket << HELLO;
-	//helloPacket << nick;
-	OutputMemoryStream oms;
-	oms.Write((int)CommandType::HELLO);
-	//oms.WriteString(nick);
+	OutputMemoryBitStream ombs;
+	ombs.Write(HELLO, BITSIZE_PACKETYPE);
 	
-	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
-	//socket.send(helloPacket, ip, 50000);
+	socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), ip, PORT);
+	
 	Clock clock;
 	clock.restart();
 	//Bucle del joc
@@ -71,7 +64,7 @@ GameEngine::GameEngine()
 		Time currTime = clock.getElapsedTime();
 		if (currTime.asMilliseconds() >  500) {
 			
-			socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, 50000);			
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), ip, 50000);			
 			cout << "sending hello again" << endl;
 			clock.restart();
 		}		
@@ -154,19 +147,16 @@ void GameEngine::startGame() {
 			}
 		}
 
-		//draw my pos
-		
-		//set limit del mapa
 
 		//Pintar pj
 		if (me.activated)
 			me.Draw(&window, false);
-		
+		//Pintar enemies
 		for (int i = 0; i < others.size(); i++)
 		{			
 			others[i].Draw(&window, true);		
 		}
-
+		//Pintar moneda
 		for (int i = 0; i < coin.size(); i++)
 		{
 			coin[i].Draw(&window);
@@ -182,18 +172,6 @@ void GameEngine::startGame() {
 		}
 
 		//pillar moneda
-
-		
-			//en el principio marco con un recuadro amarillo para identificar.
-			/*if (casillaMarcada)
-			{
-				sf::RectangleShape rect(sf::Vector2f(LADO_CASILLA, LADO_CASILLA));
-				rect.setPosition(sf::Vector2f(me.getMyPos().x*LADO_CASILLA, me.getMyPos().y*LADO_CASILLA));
-				rect.setFillColor(sf::Color::Transparent);
-				rect.setOutlineThickness(5);
-				rect.setOutlineColor(sf::Color::Yellow);
-				window.draw(rect);
-			}*/
 		
 
 		window.display();
@@ -201,7 +179,7 @@ void GameEngine::startGame() {
 }
 
 void GameEngine::ReceiveCommands() {
-	//Packet rPack;
+	
 	IpAddress ipAddr;
 	unsigned short newPort;
 
@@ -209,11 +187,6 @@ void GameEngine::ReceiveCommands() {
 	size_t received;	
 	
 	if (socket.receive(rMsg, 100, received, ipAddr, newPort) == sf::Socket::Done) {		
-
-		/*InputMemoryStream ims(rMsg, received);
-		uint8_t cmdInt;
-		ims.Read(&cmdInt);
-		CommandType cmd = (CommandType)cmdInt;*/
 
 		InputMemoryBitStream imbs(rMsg, received * 8);
 		CommandType cmd = EMPTY;
@@ -231,39 +204,20 @@ void GameEngine::ReceiveCommands() {
 				welcome = true;			
 
 				//guardo la meva id
-				/*uint8_t newId;
-				ims.Read(&newId);
-				me.id = newId;*/
 				int nId = 0;
 				imbs.Read(&nId, BITSIZE_PLAYERID);
 				me.id = nId;							
 
 				//setejo la meva pos
-				/*int16_t  newX, newY;
-				ims.Read(&newX);
-				ims.Read(&newY);
-				me.setMyPos(newX, newY);*/
 				int firstX = 0; int firstY = 0;
 				imbs.Read(&firstX, BITSIZE_POS);
 				imbs.Read(&firstY, BITSIZE_POS);
 				me.setMyPos(firstX, firstY);				
 
 				//Setejo la posicio dels altres
-				//uint8_t numOthers;
-				//ims.Read(&numOthers);
 				int numOthers = 0;
 				imbs.Read(&numOthers, BITSIZE_PLAYERID);
 				
-				
-				/*for (int i = 0; i < numOthers; i++) {
-					uint8_t provaID = 0;
-					int16_t  provaX = 0;int16_t  provaY = 0;
-					ims.Read(&provaID);					
-					ims.Read(&provaX);
-					ims.Read(&provaY);
-					
-					others.push_back(Player(provaX, provaY, Color::Red, provaID));
-				}*/
 				for (int i = 0; i < numOthers; i++) {
 					int tempID = 0;
 					int tempX = 0; int tempY = 0;
@@ -275,7 +229,6 @@ void GameEngine::ReceiveCommands() {
 				}
 
 				//pintar coins
-
 				int provaID = 0;
 				coin.push_back(Coins(rand() % 10 * LADO_CASILLA + OFFSET_AVATAR, rand() % 10 * LADO_CASILLA + OFFSET_AVATAR,provaID));
 				
@@ -291,51 +244,37 @@ void GameEngine::ReceiveCommands() {
 		case NEWPLAYER:
 		{
 			//guardem id del msg
-			//int16_t  packetId;
-			//ims.Read(&packetId);
 			int packetID = 0;
 			imbs.Read(&packetID, BITSIZE_MSGID);
 			
 			//Guardem id del player
-			//uint8_t newId;
-			//ims.Read(&newId);
 			int newId = 0;
 			imbs.Read(&newId, BITSIZE_PLAYERID);
 			
 			//si és nou ens guardem el nou jugador
 			if (CheckIfNew(newId)) {
 				
-				//int16_t  newX, newY;
 				int newX = 0; int newY = 0;
-				//ims.Read(&newX);
-				//ims.Read(&newY);
 				imbs.Read(&newX, BITSIZE_POS);
 				imbs.Read(&newY, BITSIZE_POS);
+
 				others.push_back(Player(newX, newY, Color::Red, newId));
 
 			}			
 			SendACK(packetID);
-			//cout << "sending ack of new player" << endl;
 
 			break;
 		}
 		case OKMOVE:
 		{			
 			//guardem id de a qui pertany el moviment
-			//uint8_t clientID = 0;
-			//ims.Read(&clientID);
 			int clientID = 0;
 			imbs.Read(&clientID, BITSIZE_PLAYERID);
 
 			//guardem id del msg
-			//uint8_t moveID = 0;
-			//ims.Read(&moveID);
 			int moveID = 0;
 			imbs.Read(&moveID, BITSIZE_MSGID);
 			//guardem pos. AQUI NO SON DELTES SINO POS TOTAL
-			//int16_t  newX = 0; int16_t  newY = 0;
-			//ims.Read(&newX);
-			//ims.Read(&newY);
 			int newX = 0; int newY = 0;
 			imbs.Read(&newX, BITSIZE_POS);
 			imbs.Read(&newY, BITSIZE_POS);
@@ -359,14 +298,9 @@ void GameEngine::ReceiveCommands() {
 		case FORCETP:
 		{
 			//guardem id del msg
-			//int16_t  packetId;
-			//ims.Read(&packetId);
 			int packetID = 0;
 			imbs.Read(&packetID, BITSIZE_MSGID);
 
-			/*int16_t  newX = 0; int16_t  newY = 0;
-			ims.Read(&newX);
-			ims.Read(&newY);*/
 			int newX = 0; int newY = 0;
 			imbs.Read(&newX, BITSIZE_POS);
 			imbs.Read(&newY, BITSIZE_POS);
@@ -382,14 +316,10 @@ void GameEngine::ReceiveCommands() {
 		{
 
 			//guardem id del msg
-			//int16_t  packetId;
-			//ims.Read(&packetId);
 			int packetID = 0;
 			imbs.Read(&packetID, BITSIZE_MSGID);
 
 			//guardem id de a qui pertany el moviment
-			//uint8_t clientID = 0;
-			//ims.Read(&clientID);
 			int clientID = 0;
 			imbs.Read(&clientID, BITSIZE_PLAYERID);
 
@@ -421,36 +351,29 @@ void GameEngine::SendACK(int msgId) {
 
 void GameEngine::SendCommands(CommandType cmd) {
 	
-	//OutputMemoryStream oms;
 	OutputMemoryBitStream ombs;
 	
 	switch (cmd)
 	{	
 	case TRYMOVE:
 		
-		//oms.Write((uint8_t)CommandType::TRYMOVE);
-		//oms.Write(me.id);
 		ombs.Write(TRYMOVE, BITSIZE_PACKETYPE);
 		ombs.Write(me.id, BITSIZE_PLAYERID);
 
-		//oms.Write(iC.idMove); iC.idMove++;
 		ombs.Write(iC.idMove, BITSIZE_MSGID); 
-		//oms.Write((int16_t)me.getMyPos().x);
-		//oms.Write((int16_t)me.getMyPos().y);
 		ombs.Write((int)me.getMyPos().x, BITSIZE_POS);
 		ombs.Write((int)me.getMyPos().y, BITSIZE_POS);
 		
 		iC.idMove++;
-		//socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
+		
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), ip, PORT);
 		break;
 	case PING:
-		//oms.Write((uint8_t)CommandType::PING);
+		
 		ombs.Write(PING, BITSIZE_PACKETYPE);
-		//oms.Write(me.id);
+		
 		ombs.Write(me.id, BITSIZE_PLAYERID);
 
-		//socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), ip, PORT);
 
 	default:

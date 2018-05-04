@@ -43,6 +43,5 @@ public:
 	void ReceiveCommand();
 	void ResendCriticalMsgs();
 	void AddClientIfNew(IpAddress, unsigned short);
-	Coordinates GenerateNewPos();
 	ClientProxy GetClient(int); 
 };
