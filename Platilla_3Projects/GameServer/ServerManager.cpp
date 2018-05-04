@@ -210,9 +210,11 @@ void ServerManager::AddClientIfNew(IpAddress newIp, unsigned short newPort) {
 		Coordinates newPos{ clientIndex*64 + 5, clientIndex* 64 +5 };
 		
 		//Afegim el nou client al mapa
-		ClientProxy newClient(newIp, newPort, newPos);		
+		ClientProxy newClient(newIp, newPort, newPos);
+		newClient.currMovState.xToCheck = newPos.x;
+		newClient.currMovState.yToCheck = newPos.y;
 		clients[clientIndex] = newClient;
-
+		
 		//enviem welcome	
 		SendCommand(clientIndex, WC);
 		//informem als clients actuals que hi ha un nou
@@ -258,13 +260,14 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 			oms.Write(it->second.position.y);
 			
 		}*/
+		//cout << (int)clients[0].position.x << endl;
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != (--clients.end()); it++) {
 			//oms.Write(it->first);
 			ombs.Write(it->first, BITSIZE_PLAYERID);
 			//oms.Write(it->second.position.x);
 			//oms.Write(it->second.position.y);
 			ombs.Write(it->second.position.x, BITSIZE_POS); //pq es 0?
-			cout << (int)it->second.position.x << endl;
+			
 			ombs.Write(it->second.position.y, BITSIZE_POS);
 
 		}
@@ -397,15 +400,16 @@ void ServerManager::ResendCriticalMsgs() {
 			int16_t testX = it->second.currMovState.xToCheck;
 			int16_t testY = it->second.currMovState.yToCheck;
 			
-			if (testX < 590 && testX >= 0 && testY < 590 && testY >= 0) { //si es bona ens actualitzem la nostra i enviem ok
+			if (testX < 590 && testX > 0 && testY < 590 && testY > 0) { //si es bona ens actualitzem la nostra i enviem ok
 				
 				//Si la delta no ha canviat no envio
 				if (it->second.currMovState.xToCheck != it->second.position.x || it->second.currMovState.yToCheck != it->second.position.y) {
 					SendCommand(it->first, OKMOVE); //nomes s'enviara si hi ha hagut moviment. AQUI ENVIEM A TOTHOM EL OK I DES DEL CLIENT JA VEURAN SI ÉS EL SEU				
 				}
-
+				
 				it->second.position.x = testX;
 				it->second.position.y = testY;
+				
 			}
 			else { //si no es bona enviem que es teletransporti a l'antiga posicio
 				SendCommand(it->first, FORCETP);
