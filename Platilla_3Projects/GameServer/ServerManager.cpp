@@ -45,13 +45,14 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 		socket.send(msg.buffer, msg.len, msg.ip, msg.port);		
 	}
 	else {
-		cout << "Packet perdido en las profundidades de la red" << endl;
+		cout << "Packet perdido" << endl;
 	}
 
 	//guardem el missatge pq es critic i actualitzem el id de packet
 	if (isCritical) {
 		
-		criticalPackets[packetId] = msg;		
+		criticalPackets[packetId] = msg;
+		packetId++;
 	}
 	
 }
@@ -67,12 +68,13 @@ void ServerManager::Send(Mesage msg, bool isCritical) {
 		
 	}
 	else {
-		cout << "Packet perdut" << endl;
+		cout << "Packet perdido" << endl;
 	}
 
 	//guardem el missatge pq es critic i actualitzem el id de packet
 	if (isCritical) {
-		criticalPackets[packetId] = msg;		
+		criticalPackets[packetId] = msg;
+		packetId++; //pq si l'augmentem abans d'enviar aqui queda diferent el que enviem del que ens guardem
 	}
 }
 
@@ -105,11 +107,14 @@ void ServerManager::ReceiveCommand() {
 			//ens guardem id de missatge
 			int16_t msgId;
 			ims.Read(&msgId);
-
+			
 			//borrem el missatge de la llista de pendents
-			map<int16_t, Mesage>::iterator it = criticalPackets.find(msgId);
-			if (it != criticalPackets.end())
-				criticalPackets.erase(it);
+			for (map<int16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
+				//cout << (int)it->first << endl;
+				if (it->first == msgId)
+					criticalPackets.erase(it);
+			}
+							
 			cout << "Rebut ack, Tamany packets critics " << criticalPackets.size() << endl;
 						
 
@@ -232,7 +237,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		//Afegim capçalera
 		oms.Write((uint8_t)CommandType::NEWPLAYER);
-		oms.Write(packetId); packetId++;
+		oms.Write(packetId); 
 		//Agafegim la pos del nou client		
 		ClientProxy lastClient = GetClient((uint8_t)clientIndex);
 		oms.Write((uint8_t)clientIndex);
@@ -240,7 +245,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		oms.Write(lastClient.position.y);
 		
 		//enviem
-		cout << "Enviem newplayer, paquet critic" << endl;
+		//cout << "Enviem newplayer, paquet critic" << endl;
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, true);
 		
 		
@@ -262,7 +267,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			Send(oms.GetBufferPtr(), oms.GetLength(), it->second.IP, it->second.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
 		}
-		cout << "Enviem ok move, paquet normal" << endl;
+		//cout << "Enviem ok move, paquet normal" << endl;
 		break;
 	}
 	/*case UPDATENEMIES:
@@ -288,7 +293,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 	{
 		//capcelera
 		oms.Write((uint8_t)CommandType::FORCETP);
-		oms.Write(packetId); packetId++;
+		oms.Write(packetId); 
 		//afegim la pos on ha de fer tp
 		map<uint8_t, ClientProxy>::iterator it = clients.find(clientId);
 		if (it != clients.end()) {
@@ -296,7 +301,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 			oms.Write(it->second.position.y);
 		}
 		//enviem	
-		cout << "Enviem forcetp, paquet critic" << endl;
+		//cout << "Enviem forcetp, paquet critic" << endl;
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, true); //Aquest ha de ser critic també pq si es perd i al tornarho a comprovar el player ja està ben col·locat malament
 		
 		break;
@@ -305,7 +310,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 	{
 		//capcelera
 		oms.Write((uint8_t)CommandType::DISCONNECTED);
-		oms.Write(packetId); packetId++;
+		oms.Write(packetId); 
 		oms.Write(clientId); //Afegim el idPlayer per des del client saber si és el nostre moviment o el de l'altre
 
 		//enviem		

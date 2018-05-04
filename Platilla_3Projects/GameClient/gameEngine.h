@@ -39,7 +39,7 @@ public:
 	void startGame();	
 	void ReceiveCommands();
 	void SendCommands(CommandType cmd); //FER RANDOM PER NOMES ENVIAR A VEGADES
-	void SendACK(int msgId);
+	void SendACK(int16_t msgId);
 	bool CheckIfNew(uint8_t);
 	void SendPosRoutine();
 };

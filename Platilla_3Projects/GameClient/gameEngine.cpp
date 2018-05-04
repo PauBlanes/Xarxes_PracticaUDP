@@ -285,9 +285,9 @@ void GameEngine::ReceiveCommands() {
 				others.push_back(Player(newX, newY, Color::Red, newId));
 
 			}			
-			
+			cout << (int)packetId << endl;
 			SendACK(packetId);
-			cout << "sending ack of new player" << endl;
+			//cout << "sending ack of new player" << endl;
 
 			break;
 		}
@@ -362,7 +362,7 @@ void GameEngine::ReceiveCommands() {
 			me.setMyPos(newX, newY);
 
 			SendACK(packetId);
-			cout << "sending ack of force tp" << endl;
+			//cout << "sending ack of force tp" << endl;
 
 			break;
 		}
@@ -385,7 +385,7 @@ void GameEngine::ReceiveCommands() {
 			}
 
 			SendACK(packetId);
-			cout << "sending ack of other disconected" << endl;
+			//cout << "sending ack of other disconected" << endl;
 
 			break;
 		}
@@ -395,12 +395,11 @@ void GameEngine::ReceiveCommands() {
 	}
 
 }
-void GameEngine::SendACK(int msgId) {
+void GameEngine::SendACK(int16_t msgId) {
 	
 	OutputMemoryStream oms;
 	oms.Write((uint8_t)CommandType::ACK);
-	oms.Write((int16_t )msgId);
-
+	oms.Write(msgId);	
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 	
 }
@@ -447,7 +446,7 @@ void GameEngine::SendPosRoutine() {
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
 		if (IMoved) { //Nomes envio si t'has mogut
 			SendCommands(TRYMOVE);	
-			cout << " envio trymove " << endl;
+			
 			IMoved = false;
 			sendPosClock.restart();
 		}	

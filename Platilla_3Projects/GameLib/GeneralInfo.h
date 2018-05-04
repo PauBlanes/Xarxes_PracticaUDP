@@ -15,3 +15,7 @@ struct InputCommand {
 	int16_t yToCheck = 0;
 	uint8_t idMove = 0;	
 };
+
+#define BITSIZE_POS 10
+#define BITSIZE_PLAYERID 2
+#define BITSIZE_MSGID 16
