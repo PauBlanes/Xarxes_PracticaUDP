@@ -1,16 +1,16 @@
 ﻿  gameEngine.cpp
-gameEngine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(117): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(121): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(129): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
-gameEngine.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-gameEngine.cpp(202): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(117): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(121): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(129): warning C4244: 'argument': conversion from 'float' to 'int16_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\gameengine.cpp(202): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+  Source.cpp
   Generating code
-  47 of 280 functions (16.8%) were compiled, the rest were copied from previous compilation.
-    27 functions were new in current compilation
-    49 functions had inline decision re-evaluated but remain unchanged
+  5 of 286 functions ( 1.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.pdb (Full PDB)
+  GameClient.vcxproj -> C:\Users\pblan\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameClient.exe

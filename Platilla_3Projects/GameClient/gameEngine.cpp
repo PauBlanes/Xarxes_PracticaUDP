@@ -115,19 +115,19 @@ void GameEngine::startGame() {
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::A ) {
 					me.setMyPos(me.getMyPos().x- 3,me.getMyPos().y);
-					//iC.deltaX-= 3;
+					IMoved = true;
 				}
 				else if (event.key.code == sf::Keyboard::D) {
 					me.setMyPos(me.getMyPos().x + 3, me.getMyPos().y);
-					//iC.deltaX+= 3;
+					IMoved = true;
 				}
 				else if (event.key.code == sf::Keyboard::W) {
 					me.setMyPos(me.getMyPos().x, me.getMyPos().y- 3);
-					//iC.deltaY-= 3;
+					IMoved = true;
 				}
 				else if (event.key.code == sf::Keyboard::S) {
 					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 3);
-					//iC.deltaY+= 3;
+					IMoved = true;
 				}
 			break;
 			default:
@@ -263,7 +263,7 @@ void GameEngine::ReceiveCommands() {
 				ims.Read(&newY);
 				others.push_back(Player(newX, newY, Color::Red, newId));
 
-			}
+			}			
 			
 			SendACK(packetId);
 			cout << "sending ack of new player" << endl;
@@ -286,14 +286,14 @@ void GameEngine::ReceiveCommands() {
 			
 			//si soc jo em guardo que vaig be
 			if (clientID == me.id) {				
-				cout << "ok move to : " << newX << "," << newY << endl;
+				//cout << "ok move to : " << newX << "," << newY << endl;
 			}
 			//si es un dels enemics fem la interpolacio
 			else if (newX != 0 || newY != 0) {
 				for (int i = 0; i < others.size(); i++) {
 					if (others[i].id == clientID) {												
 						others[i].CreateLerpPath(newX, newY);
-						cout << "move enemy to : " << newX << "," << newY << endl;
+						//cout << "move enemy to : " << newX << "," << newY << endl;
 					}
 				}
 			}						
@@ -330,15 +330,28 @@ void GameEngine::ReceiveCommands() {
 		}*/
 		case FORCETP:
 		{
+			//guardem id del msg
+			int16_t  packetId;
+			ims.Read(&packetId);
+
 			int16_t  newX = 0; int16_t  newY = 0;
 			ims.Read(&newX);
 			ims.Read(&newY);
 			//setejo meva pos			
 			me.setMyPos(newX, newY);
+
+			SendACK(packetId);
+			cout << "sending ack of force tp" << endl;
+
 			break;
 		}
 		case DISCONNECTED:
 		{
+
+			//guardem id del msg
+			int16_t  packetId;
+			ims.Read(&packetId);
+
 			//guardem id de a qui pertany el moviment
 			uint8_t clientID = 0;
 			ims.Read(&clientID);
@@ -346,8 +359,14 @@ void GameEngine::ReceiveCommands() {
 			for (int i = 0; i < others.size(); i++) {
 				if (others[i].id == clientID) {
 					others.erase(others.begin() + i);
+					cout << "Cliente " << (int)clientID << " se ha desconectado" << endl;
 				}
 			}
+
+			SendACK(packetId);
+			cout << "sending ack of other disconected" << endl;
+
+			break;
 		}
 		default:
 			break;		
@@ -361,9 +380,8 @@ void GameEngine::SendACK(int msgId) {
 	oms.Write((uint8_t)CommandType::ACK);
 	oms.Write((int16_t )msgId);
 
-	//POSAR PARTIAL
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
-	//I GUARDAR EN EL LLISTA PER ANAR REENVIANT
+	
 }
 
 void GameEngine::SendCommands(CommandType cmd) {
@@ -373,7 +391,7 @@ void GameEngine::SendCommands(CommandType cmd) {
 	switch (cmd)
 	{	
 	case TRYMOVE:
-		//cout << (int)iC.deltaX << "," << (int)iC.deltaY << endl;
+		
 		oms.Write((uint8_t)CommandType::TRYMOVE);
 		oms.Write(me.id);
 
@@ -406,12 +424,13 @@ bool GameEngine::CheckIfNew(uint8_t p2Check) {
 void GameEngine::SendPosRoutine() {
 	Time currTime = sendPosClock.getElapsedTime();
 	if (currTime.asMilliseconds() > SEND_POS_TIME) {
-		//if (iC.deltaX != 0 || iC.deltaY != 0) { //Nomes envio si t'has mogut
+		if (IMoved) { //Nomes envio si t'has mogut
 			SendCommands(TRYMOVE);	
-			SendCommands(PING);
-			//iC.deltaX = 0; iC.deltaY = 0;
+			cout << " envio trymove " << endl;
+			IMoved = false;
 			sendPosClock.restart();
-		//}		
+		}	
+		SendCommands(PING);
 	}
 }
 

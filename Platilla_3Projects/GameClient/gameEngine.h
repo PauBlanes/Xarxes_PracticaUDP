@@ -25,7 +25,7 @@ private:
 	UdpSocket socket;
 	string nick;
 	IpAddress ip;
-	
+	bool IMoved;
 	InputCommand iC;
 	Clock sendPosClock;
 

@@ -96,7 +96,7 @@ void Player::CreateLerpPath(int16_t endX, int16_t endY) {
 	
 	InterpPositions.clear();
 
-	float numSteps = 20*dist;
+	float numSteps = 3*dist;
 
 	for (int i = 0; i < numSteps; i++) { 
 		float step = (float)i / numSteps;

@@ -42,7 +42,6 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 	int rnd = rand() % 100;	
 	if (rnd >= PERCENTAGE_PACKET_LOSS) {
 		
-		//FER EL PARTIAL
 		socket.send(msg.buffer, msg.len, msg.ip, msg.port);		
 	}
 	else {
@@ -53,7 +52,6 @@ void ServerManager::Send(char* m, int l, IpAddress i , unsigned short p, bool is
 	if (isCritical) {
 		
 		criticalPackets[packetId] = msg;		
-		packetId++;
 	}
 	
 }
@@ -74,8 +72,7 @@ void ServerManager::Send(Mesage msg, bool isCritical) {
 
 	//guardem el missatge pq es critic i actualitzem el id de packet
 	if (isCritical) {
-		criticalPackets[packetId] = msg;
-		packetId++;
+		criticalPackets[packetId] = msg;		
 	}
 }
 
@@ -234,14 +231,15 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		//Afegim capçalera
 		oms.Write((uint8_t)CommandType::NEWPLAYER);
-		oms.Write(packetId);
+		oms.Write(packetId); packetId++;
 		//Agafegim la pos del nou client		
 		ClientProxy lastClient = GetClient((uint8_t)clientIndex);
 		oms.Write((uint8_t)clientIndex);
 		oms.Write(lastClient.position.x);
 		oms.Write(lastClient.position.y);
 		
-		//enviem		
+		//enviem
+		cout << "Enviem newplayer, paquet critic" << endl;
 		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, true);
 		
 		
@@ -255,7 +253,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 		//afegim nostra info		
 		oms.Write(receiverClient.currMovState.idMove);
-		oms.Write(receiverClient.currMovState.xToCheck);
+		oms.Write(receiverClient.currMovState.xToCheck); //enviem aquesta pq la posicio en el server la setegem després d'això
 		oms.Write(receiverClient.currMovState.yToCheck);
 			
 
@@ -263,7 +261,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			Send(oms.GetBufferPtr(), oms.GetLength(), it->second.IP, it->second.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
 		}
-			
+		cout << "Enviem ok move, paquet normal" << endl;
 		break;
 	}
 	/*case UPDATENEMIES:
@@ -289,14 +287,16 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 	{
 		//capcelera
 		oms.Write((uint8_t)CommandType::FORCETP);
+		oms.Write(packetId); packetId++;
 		//afegim la pos on ha de fer tp
 		map<uint8_t, ClientProxy>::iterator it = clients.find(clientId);
 		if (it != clients.end()) {
 			oms.Write(it->second.position.x);
 			oms.Write(it->second.position.y);
 		}
-		//enviem		
-		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, false); //HA DE SER CRITIC?
+		//enviem	
+		cout << "Enviem forcetp, paquet critic" << endl;
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, true); //Aquest ha de ser critic també pq si es perd i al tornarho a comprovar el player ja està ben col·locat malament
 		
 		break;
 	}
@@ -304,7 +304,11 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 	{
 		//capcelera
 		oms.Write((uint8_t)CommandType::DISCONNECTED);
+		oms.Write(packetId); packetId++;
 		oms.Write(clientId); //Afegim el idPlayer per des del client saber si és el nostre moviment o el de l'altre
+
+		//enviem		
+		Send(oms.GetBufferPtr(), oms.GetLength(), receiverClient.IP, receiverClient.port, true);
 	}
 	}
 
@@ -337,9 +341,10 @@ void ServerManager::ResendCriticalMsgs() {
 		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			
 			//VALIDEM LA POSICIO			
-			int16_t testX = /*it->second.position.x + */it->second.currMovState.xToCheck;
-			int16_t testY = /*it->second.position.y +*/ it->second.currMovState.yToCheck;
-			if (testX < 590 && testX > 0 && testY < 590 && testY > 0) { //si es bona ens actualitzem la nostra i enviem ok
+			int16_t testX = it->second.currMovState.xToCheck;
+			int16_t testY = it->second.currMovState.yToCheck;
+			
+			if (testX < 590 && testX >= 0 && testY < 590 && testY >= 0) { //si es bona ens actualitzem la nostra i enviem ok
 				
 				//Si la delta no ha canviat no envio
 				if (it->second.currMovState.xToCheck != it->second.position.x || it->second.currMovState.yToCheck != it->second.position.y) {
@@ -353,7 +358,7 @@ void ServerManager::ResendCriticalMsgs() {
 				SendCommand(it->first, FORCETP);
 			}
 
-			//SendCommand(it->first, UPDATENEMIES); 
+			
 			
 
 			
