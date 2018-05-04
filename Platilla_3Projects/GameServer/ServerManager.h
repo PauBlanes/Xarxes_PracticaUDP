@@ -3,6 +3,8 @@
 #include <iostream>
 #include "InputMemoryStream.h"
 #include "OutputMemoryStream.h"
+#include "InputMemoryBitStream.h"
+#include "OutputMemoryBitStream.h"
 #include <time.h>
 
 #define RESEND_TIME 500
@@ -31,7 +33,7 @@ private:
 	map<uint8_t, ClientProxy> clients; //idClient, client
 
 	UdpSocket socket;
-
+	int lastDisconnectedPlayer;
 	Clock sendPosClock;
 public:
 	ServerManager();

@@ -11,6 +11,8 @@
 #include "GeneralInfo.h"
 #include "OutputMemoryStream.h"
 #include "InputMemoryStream.h"
+#include "OutputMemoryBitStream.h"
+#include "InputMemoryBitStream.h"
 
 
 using namespace sf;
@@ -29,7 +31,7 @@ private:
 	bool IMoved;
 	InputCommand iC;
 	Clock sendPosClock;
-
+	
 public:
 	Player me;
 	vector<Player> others;
