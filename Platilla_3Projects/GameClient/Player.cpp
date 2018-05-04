@@ -34,8 +34,6 @@ Player::~Player()
 }
 
 sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
-	
-	
 	sprite.setRadius(RADIO_AVATAR);
 	sprite.setFillColor(myColor);
 	if (!interpolate || InterpPositions.empty()) {
@@ -104,4 +102,12 @@ void Player::CreateLerpPath(int16_t endX, int16_t endY) {
 	
 }
 
-
+//score
+void  Player::addScore()
+{
+	score++;
+}
+int  Player::getScore()
+{
+	return score;
+}

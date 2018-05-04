@@ -170,7 +170,18 @@ void GameEngine::startGame() {
 		for (int i = 0; i < coin.size(); i++)
 		{
 			coin[i].Draw(&window);
+			//pillar moneda
+			Vector2f dist(me.getMyPos() - coin[i].getPos());
+			float distF = sqrt(dist.x*dist.x+ dist.y*dist.y);
+			if (distF <= 50) {
+				me.addScore();
+				cout << me.getScore() << endl;
+				coin[i].setPos(rand()%10*LADO_CASILLA + OFFSET_AVATAR, rand() % 10 *LADO_CASILLA + OFFSET_AVATAR);
+			}
+
 		}
+
+		//pillar moneda
 
 		
 			//en el principio marco con un recuadro amarillo para identificar.
@@ -245,7 +256,7 @@ void GameEngine::ReceiveCommands() {
 				//pintar coins
 
 				uint8_t provaID = 0;
-				coin.push_back(Coins(50,50,provaID));
+				coin.push_back(Coins(rand() % 10 * LADO_CASILLA + OFFSET_AVATAR, rand() % 10 * LADO_CASILLA + OFFSET_AVATAR,provaID));
 
 				//Obrir la mapa
 				startGame();

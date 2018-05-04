@@ -24,6 +24,7 @@ private:
 	sf::CircleShape sprite;
 	sf::Color myColor;
 	string  myName;	
+	int score;
 	int lerpIndex;
 public:
 	Player();
@@ -40,6 +41,10 @@ public:
 	void setMyName(string);
 	string getMyName();
 	uint8_t id;
+
+	//score
+	void addScore();
+	int getScore();
 
 	//Per fer interpolacio
 	vector<Vector2f> InterpPositions;
