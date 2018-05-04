@@ -14,7 +14,7 @@ using namespace sf;
 
 struct POSITION
 {
-	uint8_t x, y;
+	int x, y;
 };
 
 class Player
@@ -28,19 +28,19 @@ private:
 	int lerpIndex;
 public:
 	Player();
-	Player(int16_t x, int16_t y, sf::Color myColor, uint8_t);
+	Player(int x, int y, sf::Color myColor, int);
 	~Player();
 
 	float speed;
 	bool activated;
 	sf::CircleShape Draw(sf::RenderWindow*, bool);
-	void setMyPos(int16_t, int16_t);
+	void setMyPos(int, int);
 	Vector2f getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
 	bool receivePos();
 	void setMyName(string);
 	string getMyName();
-	uint8_t id;
+	int id;
 
 	//score
 	void addScore();
@@ -48,7 +48,7 @@ public:
 
 	//Per fer interpolacio
 	vector<Vector2f> InterpPositions;
-	void CreateLerpPath(int16_t, int16_t);
+	void CreateLerpPath(int, int);
 	
 };
 

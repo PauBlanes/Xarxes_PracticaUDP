@@ -12,12 +12,7 @@ using namespace std;
 using namespace sf;
 
 #define INTERPOLATION_STEPS 10
-/*
-struct POSITION
-{
-	uint8_t x, y;
-};
-*/
+
 class Coins
 {
 private:
@@ -26,14 +21,14 @@ private:
 	sf::CircleShape sprite;
 
 public:
-	uint8_t id;
+	int id;
 
 	Coins();
-	Coins(int16_t x, int16_t y, uint8_t);
+	Coins(int x, int y, int);
 	~Coins();
 
 	sf::CircleShape Draw(sf::RenderWindow*);
-	void setPos(int16_t, int16_t);
+	void setPos(int, int);
 	Vector2f getPos();
 
 	sf::Vector2f BoardToWindows(sf::Vector2f);

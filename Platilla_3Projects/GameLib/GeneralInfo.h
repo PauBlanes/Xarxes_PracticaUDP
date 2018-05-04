@@ -2,8 +2,8 @@
 #include <SFML\Network.hpp>
 
 struct Coordinates {
-	int16_t x;
-	int16_t y;
+	int x;
+	int y;
 };
 
 enum CommandType {
@@ -11,8 +11,8 @@ enum CommandType {
 };
 
 struct InputCommand {
-	int16_t xToCheck = 0; //la pantalla te 576
-	int16_t yToCheck = 0;
+	int xToCheck = 0; //la pantalla te 576
+	int yToCheck = 0;
 	int idMove = 0;	
 };
 

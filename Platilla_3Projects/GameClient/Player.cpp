@@ -17,7 +17,7 @@ Player::Player()
 	lerpIndex = 0;
 }
 
-Player::Player(int16_t x, int16_t y, sf::Color col, uint8_t myId)
+Player::Player(int x, int y, sf::Color col, int myId)
 {
 	position = { (float)x,(float)y };	
 	myColor = col;
@@ -53,7 +53,7 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
 	return sprite;
 }
 
-void Player::setMyPos(int16_t x, int16_t y) {
+void Player::setMyPos(int x, int y) {
 	position = {(float)x,(float)y};	
 	if (!activated)
 		activated = true;
@@ -79,7 +79,7 @@ string Player::getMyName() {
 	return myName;
 }
 
-void Player::CreateLerpPath(int16_t endX, int16_t endY) {
+void Player::CreateLerpPath(int endX, int endY) {
 	Vector2f start = sprite.getPosition();
 	Vector2f end(endX, endY);
 		

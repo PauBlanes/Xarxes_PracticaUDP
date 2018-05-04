@@ -54,7 +54,7 @@ GameEngine::GameEngine()
 	//helloPacket << HELLO;
 	//helloPacket << nick;
 	OutputMemoryStream oms;
-	oms.Write((uint8_t)CommandType::HELLO);
+	oms.Write((int)CommandType::HELLO);
 	//oms.WriteString(nick);
 	
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
@@ -276,7 +276,7 @@ void GameEngine::ReceiveCommands() {
 
 				//pintar coins
 
-				uint8_t provaID = 0;
+				int provaID = 0;
 				coin.push_back(Coins(rand() % 10 * LADO_CASILLA + OFFSET_AVATAR, rand() % 10 * LADO_CASILLA + OFFSET_AVATAR,provaID));
 				
 				//Obrir la mapa
@@ -410,7 +410,7 @@ void GameEngine::ReceiveCommands() {
 	}
 
 }
-void GameEngine::SendACK(int16_t msgId) {
+void GameEngine::SendACK(int msgId) {
 	
 	OutputMemoryBitStream ombs;
 	ombs.Write(ACK, BITSIZE_PACKETYPE);
@@ -458,7 +458,7 @@ void GameEngine::SendCommands(CommandType cmd) {
 	}
 }
 
-bool GameEngine::CheckIfNew(uint8_t p2Check) {
+bool GameEngine::CheckIfNew(int p2Check) {
 	for each (Player p in others)
 	{
 		if (p2Check == p.id)

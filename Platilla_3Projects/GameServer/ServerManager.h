@@ -25,12 +25,12 @@ struct SendInfo {
 
 class ServerManager {
 private:
-	map<int16_t, Mesage> criticalPackets; //idPacket, missatge+adress
-	int16_t packetId;
+	map<int, Mesage> criticalPackets; //idPacket, missatge+adress
+	int packetId;
 	Clock resendClock;
 
 	int clientIndex;//per assignar id als clients quan els rebem
-	map<uint8_t, ClientProxy> clients; //idClient, client
+	map<int, ClientProxy> clients; //idClient, client
 
 	UdpSocket socket;
 	int lastDisconnectedPlayer;
@@ -39,10 +39,10 @@ public:
 	ServerManager();
 	void Send(char*, int, IpAddress, unsigned short, bool);
 	void Send(Mesage, bool);
-	void SendCommand(uint8_t, CommandType);
+	void SendCommand(int, CommandType);
 	void ReceiveCommand();
 	void ResendCriticalMsgs();
 	void AddClientIfNew(IpAddress, unsigned short);
 	Coordinates GenerateNewPos();
-	ClientProxy GetClient(uint8_t); 
+	ClientProxy GetClient(int); 
 };

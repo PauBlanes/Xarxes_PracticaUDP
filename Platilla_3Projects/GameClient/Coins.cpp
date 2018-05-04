@@ -15,7 +15,7 @@ Coins::Coins()
 	myColor = sf::Color::Blue;
 }
 
-Coins::Coins(int16_t x, int16_t y, uint8_t myId)
+Coins::Coins(int x, int y, int myId)
 {
 	myColor = sf::Color::Color(255,153,0);
 	position = { (float)x,(float)y };
@@ -40,7 +40,7 @@ sf::CircleShape Coins::Draw(sf::RenderWindow* window)
 }
 
 
-void Coins::setPos(int16_t x, int16_t y)
+void Coins::setPos(int x, int y)
 {
 	position = { (float)x,(float)y };
 }

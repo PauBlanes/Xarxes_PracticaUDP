@@ -1,11 +1,13 @@
-﻿  ServerManager.cpp
+﻿  ClientProxy.cpp
+  ServerManager.cpp
 c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(50): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(71): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(100): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(210): warning C4838: conversion from 'int' to 'int16_t' requires a narrowing conversion
+  Source.cpp
   Generating code
-  5 of 311 functions ( 1.6%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(378): warning C4715: 'ServerManager::GetClient': not all control paths return a value
+  168 of 298 functions (56.4%) were compiled, the rest were copied from previous compilation.
+    111 functions were new in current compilation
+    11 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GameServer.vcxproj -> C:\Users\pblan\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Release\GameServer.exe

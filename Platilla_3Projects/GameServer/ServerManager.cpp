@@ -22,14 +22,14 @@ ServerManager::ServerManager() {
 		ResendCriticalMsgs();
 		
 		//Comprovem que no s'hagin desconectat
-		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+		for (map<int, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			if (it->second.CheckDisconnection()) {
 				cout << "Client " << (int)it->first << " disconected" << endl;
 				lastDisconnectedPlayer = it->first;				
 				
 
 				//Avisem als altres
-				for (map<uint8_t, ClientProxy>::iterator it2 = clients.begin(); it2 != clients.end(); it2++) {
+				for (map<int, ClientProxy>::iterator it2 = clients.begin(); it2 != clients.end(); it2++) {
 					if (it2->first != lastDisconnectedPlayer)
 						SendCommand(it2->first, DISCONNECTED);
 				}
@@ -124,7 +124,7 @@ void ServerManager::ReceiveCommand() {
 			imbs.Read(&msgId, BITSIZE_MSGID);
 			
 			//borrem el missatge de la llista de pendents
-			for (map<int16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
+			for (map<int, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
 				//cout << (int)it->first << endl;
 				if (it->first == msgId)
 					criticalPackets.erase(it);
@@ -157,7 +157,7 @@ void ServerManager::ReceiveCommand() {
 			
 			
 			//Setegem el client que toca
-			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
+			map<int, ClientProxy>::iterator it = clients.find(clientID);
 			if (it != clients.end()) {
 				//it->second.currMovState.idMove = moveID;
 				it->second.currMovState.xToCheck = newX;
@@ -174,7 +174,7 @@ void ServerManager::ReceiveCommand() {
 			//ims.Read(&clientID);
 			int clientID = 0;
 			imbs.Read(&clientID, BITSIZE_PLAYERID);
-			map<uint8_t, ClientProxy>::iterator it = clients.find(clientID);
+			map<int, ClientProxy>::iterator it = clients.find(clientID);
 			if (it != clients.end()) {				
 				it->second.disconectionClock.restart(); //resetegem temoritzador de desconexio
 			}
@@ -191,7 +191,7 @@ void ServerManager::AddClientIfNew(IpAddress newIp, unsigned short newPort) {
 	bool isNew = true;
 	
 	//Comprovem si és nou
-	map<uint8_t, ClientProxy>::iterator it = clients.begin();
+	map<int, ClientProxy>::iterator it = clients.begin();
 	while (it != clients.end())
 	{
 		if (newIp == it->second.IP && newPort == it->second.port) {
@@ -226,7 +226,7 @@ void ServerManager::AddClientIfNew(IpAddress newIp, unsigned short newPort) {
 	}
 }
 
-void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
+void ServerManager::SendCommand(int clientId, CommandType cmd) {
 	//OutputMemoryStream oms;
 	OutputMemoryBitStream ombs;
 	
@@ -261,7 +261,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 			
 		}*/
 		//cout << (int)clients[0].position.x << endl;
-		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != (--clients.end()); it++) {
+		for (map<int, ClientProxy>::iterator it = clients.begin(); it != (--clients.end()); it++) {
 			//oms.Write(it->first);
 			ombs.Write(it->first, BITSIZE_PLAYERID);
 			//oms.Write(it->second.position.x);
@@ -290,7 +290,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		//oms.Write(packetId); 
 		ombs.Write(packetId, BITSIZE_MSGID);
 		//Agafegim la pos del nou client		
-		ClientProxy lastClient = GetClient((uint8_t)clientIndex);
+		ClientProxy lastClient = GetClient((int)clientIndex);
 		//oms.Write((uint8_t)clientIndex);
 		ombs.Write(clientIndex, BITSIZE_PLAYERID);
 		//oms.Write(lastClient.position.x);
@@ -323,7 +323,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 			
 
 		//enviem a tots
-		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+		for (map<int, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			//Send(oms.GetBufferPtr(), oms.GetLength(), it->second.IP, it->second.port, false); //el id del packet podria coincidir amb el idMove i donar problemes, s'ha de fer llista a part
 			Send(ombs.GetBufferPtr(), ombs.GetByteLength(), it->second.IP, it->second.port, false);
 		}
@@ -338,7 +338,7 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 		//oms.Write(packetId);
 		ombs.Write(packetId, BITSIZE_MSGID);
 		//afegim la pos on ha de fer tp
-		map<uint8_t, ClientProxy>::iterator it = clients.find(clientId);
+		map<int, ClientProxy>::iterator it = clients.find(clientId);
 		if (it != clients.end()) {
 			//oms.Write(it->second.position.x);
 			//oms.Write(it->second.position.y);
@@ -370,8 +370,8 @@ void ServerManager::SendCommand(uint8_t clientId, CommandType cmd) {
 
 }
 
-ClientProxy ServerManager::GetClient(uint8_t id) {
-	map<uint8_t, ClientProxy>::iterator it = clients.find(id);
+ClientProxy ServerManager::GetClient(int id) {
+	map<int, ClientProxy>::iterator it = clients.find(id);
 	if (it != clients.end()) {		
 		return it->second;
 	}
@@ -381,7 +381,7 @@ void ServerManager::ResendCriticalMsgs() {
 	Time currTime = resendClock.getElapsedTime();
 	if (currTime.asMilliseconds() > RESEND_TIME) {
 		
-		for (map<int16_t, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
+		for (map<int, Mesage>::iterator it = criticalPackets.begin(); it != criticalPackets.end(); it++) {
 			
 			Send(it->second, false);//perque no volem tornarlo a afegir al array, ja que no l'ehm borrat encara
 			
@@ -394,11 +394,11 @@ void ServerManager::ResendCriticalMsgs() {
 	if (currTime.asMilliseconds() > SEND_POS_WAIT_TIME) {		
 
 		//enviem posicions
-		for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
+		for (map<int, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
 			
 			//VALIDEM LA POSICIO			
-			int16_t testX = it->second.currMovState.xToCheck;
-			int16_t testY = it->second.currMovState.yToCheck;
+			int testX = it->second.currMovState.xToCheck;
+			int testY = it->second.currMovState.yToCheck;
 			
 			if (testX < 590 && testX > 0 && testY < 590 && testY > 0) { //si es bona ens actualitzem la nostra i enviem ok
 				
@@ -413,22 +413,10 @@ void ServerManager::ResendCriticalMsgs() {
 			}
 			else { //si no es bona enviem que es teletransporti a l'antiga posicio
 				SendCommand(it->first, FORCETP);
-			}
-
-			
-			
+			}			
 
 			
 		}
-
-		//netegem els deltes
-		/*for (map<uint8_t, ClientProxy>::iterator it = clients.begin(); it != clients.end(); it++) {
-			
-			it->second.currMovState.xToCheck = 0;
-			it->second.currMovState.yToCheck = 0;
-			
-		}	*/
-
 		sendPosClock.restart();
 	}
 }
