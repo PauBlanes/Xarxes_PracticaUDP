@@ -7,11 +7,6 @@
 #define RADIO_AVATAR 25.f
 #define OFFSET_AVATAR 5
 
-#define SIZE_TABLERO 64
-#define LADO_CASILLA 64
-#define RADIO_AVATAR 25.f
-#define OFFSET_AVATAR 5
-
 
 
 Player::Player()

@@ -98,6 +98,7 @@ void ServerManager::ReceiveCommand() {
 			cout << "rebut HELLO de " << ipAddr << ":" << newPort << endl;
 			//quan rebem el nick tmb l'haurem de passar per aqui
 			AddClientIfNew(ipAddr, newPort);
+
 			break;		
 		case ACK:
 		{

@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include "Player.h"
+#include "Coins.h"
 #include "GeneralInfo.h"
 #include "OutputMemoryStream.h"
 #include "InputMemoryStream.h"
@@ -32,6 +33,7 @@ private:
 public:
 	Player me;
 	vector<Player> others;
+	vector<Coins> coin;
 	GameEngine();
 	~GameEngine();
 	void startGame();	

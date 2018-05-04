@@ -166,7 +166,11 @@ void GameEngine::startGame() {
 		{			
 			others[i].Draw(&window, true);		
 		}
-		
+
+		for (int i = 0; i < coin.size(); i++)
+		{
+			coin[i].Draw(&window);
+		}
 
 		
 			//en el principio marco con un recuadro amarillo para identificar.
@@ -237,6 +241,12 @@ void GameEngine::ReceiveCommands() {
 					//cout << (int)provaX/* << "," << (int)provaY*/ << endl;
 					others.push_back(Player(provaX, provaY, Color::Red, provaID));
 				}
+
+				//pintar coins
+
+				uint8_t provaID = 0;
+				coin.push_back(Coins(50,50,provaID));
+
 				//Obrir la mapa
 				startGame();
 			}		
