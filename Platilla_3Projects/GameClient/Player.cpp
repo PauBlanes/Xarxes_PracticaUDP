@@ -43,9 +43,8 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window, bool interpolate) {
 		sprite.setPosition(InterpPositions[lerpIndex]);
 		if (lerpIndex < InterpPositions.size() - 1) {
 			lerpIndex += 1;	
-			//InterpPositions.erase(InterpPositions.begin());
 		}
-		//cout << lerpIndex << " : " << (int)myColor.r << (int)myColor.g << (int)myColor.b << endl; //PQ SOLO SE SUMA EL LERPINDEX EN EL JUGADOR PRINCIPAL(EL YELLOW)????
+		
 	}	
 	
 	window->draw(sprite);

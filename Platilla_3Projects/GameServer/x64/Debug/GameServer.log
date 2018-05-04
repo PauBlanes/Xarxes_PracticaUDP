@@ -1,2 +1,6 @@
-﻿  Source.cpp
-  GameServer.vcxproj -> C:\Users\pblan\Downloads\Platilla_3Projects\x64\Debug\GameServer.exe
+﻿  ServerManager.cpp
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(50): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(71): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(98): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameserver\servermanager.cpp(323): warning C4715: 'ServerManager::GetClient': not all control paths return a value
+  GameServer.vcxproj -> C:\Users\pblan\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Debug\GameServer.exe

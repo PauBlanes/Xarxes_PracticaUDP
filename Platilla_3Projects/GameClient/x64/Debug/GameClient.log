@@ -1,2 +1,3 @@
-﻿  Source.cpp
-  GameClient.vcxproj -> C:\Users\pblan\Downloads\Platilla_3Projects\x64\Debug\GameClient.exe
+﻿  Player.cpp
+c:\users\pblan\documents\github\xarxes_practicaudp\platilla_3projects\gameclient\player.cpp(83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GameClient.vcxproj -> C:\Users\pblan\Documents\GitHub\Xarxes_PracticaUDP\Platilla_3Projects\x64\Debug\GameClient.exe
